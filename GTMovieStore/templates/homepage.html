@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GT Movies</title>
+    <link rel="stylesheet" type="text/css" href="{% static '/homepage.css' %}">
+</head>
+<body>
+    <h1>Now Playing Movies</h1>
+    <div class="movie-container">
+        {% for movie in movies %}
+        <div class="movie-card">
+            <img class="movie-poster" 
+                 src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" 
+                 alt="{{ movie.title }}">
+            <div class="movie-title">{{ movie.title }}</div>
+            <div class="movie-description">{{ movie.overview }}</div>
+            <div class="movie-release-date">{{ movie.release_date }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
