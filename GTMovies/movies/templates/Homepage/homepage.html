@@ -73,9 +73,22 @@
     </nav>
 
     <!-- Movie List -->
-    <div class="container movie-container">
+    <div class="container mt-4">
         <h1 class="text-center my-4">Now Playing Movies</h1>
-        <div class="row">
+
+        <!-- Search Bar -->
+        <form method="GET" action="{% url 'homepage' %}" class="d-flex justify-content-center mb-4">
+            <input class="form-control me-2 w-50" type="search" name="q" placeholder="Search movies..." aria-label="Search">
+            <button class="btn btn-outline-light" type="submit">Search</button>
+        </form>
+
+        <!-- No movies found message -->
+        {% if search_query and not movies %}
+            <p class="text-center text-warning">No movies found for "{{ search_query }}"</p>
+        {% endif %}
+
+        <!-- Movie List Grid -->
+        <div class="row justify-content-center">
             {% for movie in movies %}
             <div class="col-6 col-md-4 col-lg-3 mb-4">
                 <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none text-light">

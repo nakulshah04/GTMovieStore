@@ -21,8 +21,10 @@ def homepage(request):
     api_url = 'https://api.themoviedb.org/3/movie/now_playing'
     api_key = 'f2169e05c3c7239e9f580445e0755083'
 
+    search_query = request.GET.get("q", "").strip()  # Get search query from URL
+
     movies = []
-    num_pages = 20
+    num_pages = 3  # Reduce pages for better performance
 
     for page in range(1, num_pages + 1):
         response = requests.get(api_url, params={
@@ -33,8 +35,11 @@ def homepage(request):
         if response.status_code == 200:
             movies.extend(response.json().get('results', []))
 
-    return render(request, 'Homepage/homepage.html', {"movies": movies})
+    # 🔍 Apply search filter if query exists
+    if search_query:
+        movies = [movie for movie in movies if search_query.lower() in movie["title"].lower()]
 
+    return render(request, 'Homepage/homepage.html', {"movies": movies, "search_query": search_query})
 
 def movie_detail(request, movie_id):
     """
