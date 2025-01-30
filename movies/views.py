@@ -43,20 +43,42 @@ def homepage(request):
 
 def movie_detail(request, movie_id):
     """
-    Fetch detailed movie information from the API based on movie_id.
+    Fetch detailed movie information and reviews from TMDB.
     """
-    api_url = f'https://api.themoviedb.org/3/movie/{movie_id}'
     api_key = 'f2169e05c3c7239e9f580445e0755083'
 
-    response = requests.get(api_url, params={'api_key': api_key, 'language': 'en-US'})
+    movie_url = f'https://api.themoviedb.org/3/movie/{movie_id}'
+    movie_response = requests.get(movie_url, params={'api_key': api_key, 'language': 'en-US'})
 
-    if response.status_code == 200:
-        movie = response.json()
-        return render(request, 'Movies/movie_detail.html', {'movie': movie})
-    else:
-        raise Http404("Movie not found.")
+    reviews = []
+    page = 1
+    total_pages = 1  
 
+    while page <= total_pages:
+        reviews_url = f'https://api.themoviedb.org/3/movie/{movie_id}/reviews'
+        reviews_response = requests.get(reviews_url, params={'api_key': api_key, 'language': 'en-US', 'page': page})
 
+        if reviews_response.status_code == 200:
+            data = reviews_response.json()
+            print(f"Page {page} Response JSON: {data}")  
+
+            total_results = data.get("total_results", 0)
+            print(f"Total Reviews Available: {total_results}")  
+
+            reviews.extend(data.get("results", []))  
+            total_pages = data.get("total_pages", 1)  
+            page += 1  
+        else:
+            break  
+
+    if len(reviews) == 0:
+        reviews = ["No reviews available for this movie."]
+
+    if movie_response.status_code == 200:
+        movie = movie_response.json()
+        return render(request, 'Movies/movie_detail.html', {'movie': movie, 'reviews': reviews})
+    
+    raise Http404("Movie not found.")
 
 # Simulated pricing (in a real app, this would come from a database)
 MOVIE_PRICES = {
