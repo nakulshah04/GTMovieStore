@@ -24,7 +24,7 @@ def homepage(request):
     search_query = request.GET.get("q", "").strip()  # Get search query from URL
 
     movies = []
-    num_pages = 3  # Reduce pages for better performance
+    num_pages = 50  # Reduce pages for better performance
 
     for page in range(1, num_pages + 1):
         response = requests.get(api_url, params={
@@ -166,7 +166,7 @@ def login_view(request):
         else:
             messages.error(request, "Invalid credentials")
 
-    return render(request, 'Auth/login.html')  # ✅ Fix the path here
+    return render(request, 'Auth/login.html')  
 
 def register_view(request):
     if request.user.is_authenticated:
@@ -187,12 +187,25 @@ def register_view(request):
         elif User.objects.filter(email=email).exists():
             messages.error(request, "Email already in use.")
         else:
+            # Create the user in Django
             user = User.objects.create_user(username=username, email=email, password=password1)
             user.save()
-            messages.success(request, "Account created successfully! You can now log in.")
-            return redirect('login')
 
-    return render(request, 'Auth/register.html')  # ✅ Fix the path here
+            user_data = {
+                "username": username,
+                "email": email,
+                "uid": str(user.id),  
+                "created_at": firestore.SERVER_TIMESTAMP  
+            }
+
+            try:
+                db.collection('RegisteredUsers').document(str(user.id)).set(user_data)
+                messages.success(request, "Account created successfully! You can now log in.")
+                return redirect('login')
+            except Exception as e:
+                messages.error(request, "Failed to register user in Firestore. Please try again later.")
+
+    return render(request, 'Auth/register.html')
 
 
 def logout_view(request):

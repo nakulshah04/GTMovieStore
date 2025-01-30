@@ -17,16 +17,29 @@
         }
         .movie-container {
             margin-top: 20px;
+
         }
+
+        .my-4{
+            text-align: left;
+            font-size: 25px;
+        }
+
+
         .movie-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
             text-align: center;
             padding: 15px;
             background-color: #1a1a1a;
             border-radius: 10px;
-            transition: transform 0.3s ease-in-out;
+            transition: transform 0.1s ease-in-out;
+            height: 100%;
         }
         .movie-card:hover {
-            transform: scale(1.05);
+            transform: translateY(-5px);
         }
         .movie-card img {
             width: 100%;
@@ -46,6 +59,7 @@
             color: white;
             margin-top: auto;
         }
+
     </style>
 </head>
 <body>
