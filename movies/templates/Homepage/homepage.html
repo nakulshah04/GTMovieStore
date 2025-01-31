@@ -64,7 +64,6 @@
 </head>
 <body>
 
-    <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="/">GT Movies</a>
@@ -86,17 +85,14 @@
         </div>
     </nav>
 
-    <!-- Movie List -->
     <div class="container mt-4">
         <h1 class="text-center my-4">Now Playing Movies</h1>
 
-        <!-- Search Bar -->
         <form method="GET" action="{% url 'homepage' %}" class="d-flex justify-content-center mb-4">
             <input class="form-control me-2 w-50" type="search" name="q" placeholder="Search movies..." aria-label="Search">
             <button class="btn btn-outline-light" type="submit">Search</button>
         </form>
 
-        <!-- No movies found message -->
         {% if search_query and not movies %}
             <p class="text-center text-warning">No movies found for "{{ search_query }}"</p>
         {% endif %}
