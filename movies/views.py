@@ -1,4 +1,3 @@
-import firebase_admin
 from django.shortcuts import render
 from django.http import Http404
 from movies.firebase.config.firebase_init import initialize_firebase
@@ -10,42 +9,66 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import JsonResponse
 
-# Initialize Firebase at the start
+
 initialize_firebase()
 
-# Initialize Firestore client AFTER Firebase is initialized
 db = firestore.client()
-
 
 def homepage(request):
     api_url = 'https://api.themoviedb.org/3/movie/now_playing'
     api_key = 'f2169e05c3c7239e9f580445e0755083'
 
-    search_query = request.GET.get("q", "").strip()  # Get search query from URL
+    search_query = request.GET.get("q", "").strip()  
 
-    movies = []
-    num_pages = 50  # Reduce pages for better performance
+    movies_ref = db.collection("Movies")
+    stored_movies = [doc.to_dict() for doc in movies_ref.stream()]
 
-    for page in range(1, num_pages + 1):
-        response = requests.get(api_url, params={
-            'api_key': api_key,
-            'language': 'en-US',
-            'page': page
-        })
-        if response.status_code == 200:
-            movies.extend(response.json().get('results', []))
+    if not stored_movies:
+        movies = []
+        for page in range(1, 11):
+            response = requests.get(api_url, params={'api_key': api_key, 'language': 'en-US', 'page': page})
+            if response.status_code == 200:
+                results = response.json().get('results', [])
+                movies.extend(results)
 
-    # 🔍 Apply search filter if query exists
+        existing_movie_ids = {movie['id'] for movie in stored_movies}
+        for movie in movies:
+            if str(movie['id']) not in existing_movie_ids:
+                movie_ref = movies_ref.document(str(movie['id']))
+                movie_ref.set({
+                    "id": movie['id'],
+                    "title": movie['title'],
+                    "poster_path": movie['poster_path'],
+                    "overview": movie['overview'],
+                    "release_date": movie['release_date'],
+                    "rating": movie.get('vote_average', 0),
+                    "created_at": firestore.SERVER_TIMESTAMP
+                })
+                stored_movies.append(movie)
+
     if search_query:
-        movies = [movie for movie in movies if search_query.lower() in movie["title"].lower()]
+        filtered_movies = [movie for movie in stored_movies if search_query.lower() in movie['title'].lower()]
+    else:
+        filtered_movies = stored_movies
 
-    return render(request, 'Homepage/homepage.html', {"movies": movies, "search_query": search_query})
+    return render(request, 'Homepage/homepage.html', {"movies": filtered_movies})
 
 def movie_detail(request, movie_id):
     """
-    Fetch detailed movie information and reviews from TMDB.
+    Fetch detailed movie information and reviews from TMDB or Firestore if already cached.
     """
     api_key = 'f2169e05c3c7239e9f580445e0755083'
+
+    movie_id = str(movie_id)
+
+    movies_ref = db.collection("Movies")
+
+    movie_doc = movies_ref.document(movie_id).get()
+
+    if movie_doc.exists:
+        movie = movie_doc.to_dict()
+        reviews = movie.get("reviews", ["No reviews available for this movie."])
+        return render(request, 'Movies/movie_detail.html', {'movie': movie, 'reviews': reviews})
 
     movie_url = f'https://api.themoviedb.org/3/movie/{movie_id}'
     movie_response = requests.get(movie_url, params={'api_key': api_key, 'language': 'en-US'})
@@ -60,13 +83,9 @@ def movie_detail(request, movie_id):
 
         if reviews_response.status_code == 200:
             data = reviews_response.json()
-            print(f"Page {page} Response JSON: {data}")  
-
             total_results = data.get("total_results", 0)
-            print(f"Total Reviews Available: {total_results}")  
-
-            reviews.extend(data.get("results", []))  
-            total_pages = data.get("total_pages", 1)  
+            reviews.extend(data.get("results", []))
+            total_pages = data.get("total_pages", 1)
             page += 1  
         else:
             break  
@@ -76,8 +95,20 @@ def movie_detail(request, movie_id):
 
     if movie_response.status_code == 200:
         movie = movie_response.json()
+
+        movie_doc = movies_ref.document(movie_id)
+        movie_doc.set({
+            "id": movie_id,
+            "title": movie["title"],
+            "poster_path": movie["poster_path"],
+            "overview": movie["overview"],
+            "release_date": movie["release_date"],
+            "rating": movie.get("vote_average", 0),
+            "reviews": reviews,  
+            "created_at": firestore.SERVER_TIMESTAMP
+        })
         return render(request, 'Movies/movie_detail.html', {'movie': movie, 'reviews': reviews})
-    
+
     raise Http404("Movie not found.")
 
 # Simulated pricing (in a real app, this would come from a database)
@@ -86,6 +117,9 @@ MOVIE_PRICES = {
     299534: 12.99,
     76341: 7.99,
 }
+
+
+
 def cart(request):
     """ View Cart Page """
     cart = request.session.get('cart', {})
@@ -149,11 +183,10 @@ def remove_from_cart(request, movie_id):
     """ Remove Movie from Cart """
     cart = request.session.get('cart', {})
 
-    # Ensure `movie_id` is treated as a string for dictionary key lookup
     movie_id = str(movie_id)
 
     if movie_id in cart:
-        del cart[movie_id]  # Remove the item from the dictionary
+        del cart[movie_id]  
 
     request.session['cart'] = cart  # Save updated cart
     messages.success(request, "Movie removed from cart!")

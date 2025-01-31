@@ -1,9 +1,15 @@
 import firebase_admin
-from firebase_admin import credentials
-
-SERVICE_ACCOUNT_PATH = "movies/firebase/config/firebaseAuth.json"  # Update with correct path
+from firebase_admin import credentials, firestore
 
 def initialize_firebase():
-    if not firebase_admin._apps:  # Ensures Firebase initializes only once
-        cred = credentials.Certificate(SERVICE_ACCOUNT_PATH)
+    """
+    Initialize Firebase Admin SDK with the service account credentials.
+    Ensure that the credentials file is correctly placed.
+    """
+    try:
+        # Point to your service account JSON file
+        cred = credentials.Certificate("movies/firebase/config/firebaseAuth.json")
         firebase_admin.initialize_app(cred)
+    except ValueError:
+        # If Firebase is already initialized, just pass
+        pass
