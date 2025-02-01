@@ -67,7 +67,6 @@ def homepage(request):
     for movie in filtered_movies:
         if movie['release_date']:
             movie['release_date'] = datetime.strptime(movie['release_date'], "%Y-%m-%d")
-
     return render(request, 'Homepage/homepage.html', {"movies": filtered_movies})
 
 def movie_detail(request, movie_id):
