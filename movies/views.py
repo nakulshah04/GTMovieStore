@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import JsonResponse
+from datetime import datetime
 
 
 initialize_firebase()
@@ -18,7 +19,8 @@ def homepage(request):
     api_url = 'https://api.themoviedb.org/3/movie/now_playing'
     api_key = 'f2169e05c3c7239e9f580445e0755083'
 
-    search_query = request.GET.get("q", "").strip()  
+    search_query = request.GET.get("q", "").strip()
+    sort_order = request.GET.get("sort", "")
 
     movies_ref = db.collection("Movies")
     stored_movies = [doc.to_dict() for doc in movies_ref.stream()]
@@ -51,6 +53,20 @@ def homepage(request):
     else:
         filtered_movies = stored_movies
 
+    # Sorting movies based on sort query
+    if sort_order == "title_asc":
+        filtered_movies.sort(key=lambda x: x['title'].lower())
+    elif sort_order == "title_desc":
+        filtered_movies.sort(key=lambda x: x['title'].lower(), reverse=True)
+    elif sort_order == "date_desc":
+        filtered_movies.sort(key=lambda x: x['release_date'], reverse=True)
+    elif sort_order == "date_asc":
+        filtered_movies.sort(key=lambda x: x['release_date'])
+
+    # Convert release_date to datetime object for formatting
+    for movie in filtered_movies:
+        if movie['release_date']:
+            movie['release_date'] = datetime.strptime(movie['release_date'], "%Y-%m-%d")
     return render(request, 'Homepage/homepage.html', {"movies": filtered_movies})
 
 def movie_detail(request, movie_id):
