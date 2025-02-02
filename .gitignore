@@ -17,3 +17,5 @@ db.sqlite3
 # Ignore static and media files if using Django
 staticfiles/
 media/
+__pycache__/
+*.pyc
