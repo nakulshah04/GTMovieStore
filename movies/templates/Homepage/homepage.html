@@ -63,8 +63,6 @@
                     <div class="movie-card">
                         <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}">
                         <h5 class="mt-2">{{ movie.title }}</h5>
-                        <p>{{ movie.overview|truncatewords:20 }}</p>
-                        <p><strong>Release Date:</strong> {{ movie.release_date|date:"jS M Y" }}</p>
                     </div>
                 </a>
             </div>

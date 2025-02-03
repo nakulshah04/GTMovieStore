@@ -43,7 +43,6 @@ body {
     flex-direction: column;
     text-align: center;
     padding: 15px;
-    background-color: var(--card-background);
     border-radius: 10px;
     transition: transform 0.1s ease-in-out;
     height: 100%;
@@ -130,4 +129,18 @@ input:checked + .slider:before {
 
 .slider.round:before {
     border-radius: 50%; /* Adjust border-radius */
+}
+
+.movie-card h5 {
+    color: var(--text-color);
+}
+
+.btn-outline-light {
+    color: var(--text-color);
+    border-color: var(--text-color);
+}
+
+.btn-outline-light:hover {
+    background-color: var(--text-color);
+    color: var(--background-color);
 }
