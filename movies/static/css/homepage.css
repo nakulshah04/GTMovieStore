@@ -14,6 +14,15 @@ body {
     text-align: left;
     font-size: 25px;
 }
+
+.movie-card-holder{
+    /* background-color: blue; */
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    width: 100%;
+    gap: 0.5em;
+}
+
 .movie-card {
     display: flex;
     align-items: center;
@@ -21,7 +30,7 @@ body {
     flex-direction: column;
     text-align: center;
     padding: 15px;
-    background-color: #1a1a1a;
+    /* background-color: #1a1a1a; */
     border-radius: 10px;
     transition: transform 0.1s ease-in-out;
     height: 100%;
@@ -47,3 +56,6 @@ body {
     color: white;
     margin-top: auto;
 }
+
+
+
