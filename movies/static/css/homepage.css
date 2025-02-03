@@ -1,0 +1,133 @@
+/* homepage.css */
+
+:root {
+    --background-color: #ffffff;
+    --text-color: #000000; /* Dark text color for better visibility */
+    --navbar-background: #f8f9fa;
+    --card-background: #afa9a9; /* Light grey background for movie cards */
+    --footer-background: #f8f9fa;
+}
+
+[data-theme="dark"] {
+    --background-color: #000000;
+    --text-color: #ffffff;
+    --navbar-background: #111;
+    --card-background: #1a1a1a;
+    --footer-background: #111;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.movie-container {
+    margin-top: 20px;
+}
+
+.my-4 {
+    text-align: left;
+    font-size: 25px;
+}
+
+.movie-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 15px;
+    background-color: var(--card-background);
+    border-radius: 10px;
+    transition: transform 0.1s ease-in-out;
+    height: 100%;
+}
+
+.movie-card:hover {
+    transform: translateY(-5px);
+}
+
+.movie-card img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.navbar {
+    background-color: var(--navbar-background);
+}
+
+.navbar-toggler {
+    border: 1px solid var(--text-color);
+    padding: 5px;
+}
+
+.footer {
+    text-align: center;
+    padding: 15px;
+    background-color: var(--footer-background);
+    color: var(--text-color);
+    margin-top: auto;
+}
+
+/* Style for the toggle switch */
+.theme-switch {
+    display: inline-block;
+    height: 20px; /* Adjust height */
+    position: relative;
+    width: 40px; /* Adjust width */
+    vertical-align: middle;
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-bottom: 5px;
+}
+
+.theme-switch input {
+    display: none;
+}
+
+.slider {
+    background-color: #ccc;
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: 0.4s;
+    border-radius: 20px; /* Adjust border-radius */
+}
+
+.slider:before {
+    background-color: white;
+    bottom: 2px; /* Adjust position */
+    content: "";
+    height: 16px; /* Adjust height */
+    left: 2px; /* Adjust position */
+    position: absolute;
+    transition: 0.4s;
+    width: 16px; /* Adjust width */
+    border-radius: 50%; /* Adjust border-radius */
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px); /* Adjust translate */
+}
+
+/* Rounded slider */
+.slider.round {
+    border-radius: 20px; /* Adjust border-radius */
+}
+
+.slider.round:before {
+    border-radius: 50%; /* Adjust border-radius */
+}

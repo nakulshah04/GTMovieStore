@@ -1,0 +1,23 @@
+body {
+    background-color: black;
+    color: white;
+}
+.container {
+    max-width: 800px;
+    margin: auto;
+    padding: 40px;
+    text-align: center;
+}
+.navbar {
+    background-color: #111;
+}
+.navbar-brand, .nav-link {
+    color: white !important;
+}
+.footer {
+    text-align: center;
+    padding: 15px;
+    background-color: #111;
+    color: white;
+    margin-top: 30px;
+}
