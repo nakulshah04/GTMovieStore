@@ -218,7 +218,7 @@ def about(request):
     """
     Render the About page.
     """
-    return render(request, 'Movies/about.html')
+    return render(request, 'Movies/aboutpage.html')
 
 
 
