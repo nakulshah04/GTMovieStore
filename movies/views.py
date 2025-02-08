@@ -16,116 +16,36 @@ initialize_firebase()
 db = firestore.client()
 
 def homepage(request):
-    api_url = 'https://api.themoviedb.org/3/movie/now_playing'
-    api_key = 'f2169e05c3c7239e9f580445e0755083'
+    movies_ref = db.collection("Movies").order_by("created_at", direction=firestore.Query.DESCENDING)
+    movies = [doc.to_dict() for doc in movies_ref.stream()]
 
-    search_query = request.GET.get("q", "").strip()
-    sort_order = request.GET.get("sort", "")
-
-    movies_ref = db.collection("Movies")
-    stored_movies = [doc.to_dict() for doc in movies_ref.stream()]
-
-    if not stored_movies:
-        movies = []
-        for page in range(1, 11):
-            response = requests.get(api_url, params={'api_key': api_key, 'language': 'en-US', 'page': page})
-            if response.status_code == 200:
-                results = response.json().get('results', [])
-                movies.extend(results)
-
-        existing_movie_ids = {movie['id'] for movie in stored_movies}
-        for movie in movies:
-            if str(movie['id']) not in existing_movie_ids:
-                movie_ref = movies_ref.document(str(movie['id']))
-                movie_ref.set({
-                    "id": movie['id'],
-                    "title": movie['title'],
-                    "poster_path": movie['poster_path'],
-                    "overview": movie['overview'],
-                    "release_date": movie['release_date'],
-                    "rating": movie.get('vote_average', 0),
-                    "created_at": firestore.SERVER_TIMESTAMP
-                })
-                stored_movies.append(movie)
-
-    if search_query:
-        filtered_movies = [movie for movie in stored_movies if search_query.lower() in movie['title'].lower()]
-    else:
-        filtered_movies = stored_movies
-
-    # Sorting movies based on sort query
-    if sort_order == "title_asc":
-        filtered_movies.sort(key=lambda x: x['title'].lower())
-    elif sort_order == "title_desc":
-        filtered_movies.sort(key=lambda x: x['title'].lower(), reverse=True)
-    elif sort_order == "date_desc":
-        filtered_movies.sort(key=lambda x: x['release_date'], reverse=True)
-    elif sort_order == "date_asc":
-        filtered_movies.sort(key=lambda x: x['release_date'])
-
-    # Convert release_date to datetime object for formatting
-    for movie in filtered_movies:
-        if movie['release_date']:
-            movie['release_date'] = datetime.strptime(movie['release_date'], "%Y-%m-%d")
-    return render(request, 'Homepage/homepage.html', {"movies": filtered_movies})
+    return render(request, 'Homepage/homepage.html', {"movies": movies})
 
 def movie_detail(request, movie_id):
-    """
-    Fetch detailed movie information and reviews from TMDB or Firestore if already cached.
-    """
-    api_key = 'f2169e05c3c7239e9f580445e0755083'
+    """ Fetch detailed movie information and reviews from Firestore """
 
     movie_id = str(movie_id)
 
     movies_ref = db.collection("Movies")
+    reviews_ref = db.collection("Reviews")
 
+    # Get movie details from Firestore
     movie_doc = movies_ref.document(movie_id).get()
 
     if movie_doc.exists:
         movie = movie_doc.to_dict()
-        reviews = movie.get("reviews", ["No reviews available for this movie."])
+
+        # Get reviews for the movie from Firestore
+        reviews_query = reviews_ref.where('movie_id', '==', movie_id).stream()
+        reviews = [review.to_dict() for review in reviews_query]
+
+        if not reviews:
+            reviews = [{"author": "Anonymous", "content": "No reviews available for this movie."}]
+
         return render(request, 'Movies/movie_detail.html', {'movie': movie, 'reviews': reviews})
+    else:
+        raise Http404("Movie not found.")
 
-    movie_url = f'https://api.themoviedb.org/3/movie/{movie_id}'
-    movie_response = requests.get(movie_url, params={'api_key': api_key, 'language': 'en-US'})
-
-    reviews = []
-    page = 1
-    total_pages = 1  
-
-    while page <= total_pages:
-        reviews_url = f'https://api.themoviedb.org/3/movie/{movie_id}/reviews'
-        reviews_response = requests.get(reviews_url, params={'api_key': api_key, 'language': 'en-US', 'page': page})
-
-        if reviews_response.status_code == 200:
-            data = reviews_response.json()
-            total_results = data.get("total_results", 0)
-            reviews.extend(data.get("results", []))
-            total_pages = data.get("total_pages", 1)
-            page += 1  
-        else:
-            break  
-
-    if len(reviews) == 0:
-        reviews = ["No reviews available for this movie."]
-
-    if movie_response.status_code == 200:
-        movie = movie_response.json()
-
-        movie_doc = movies_ref.document(movie_id)
-        movie_doc.set({
-            "id": movie_id,
-            "title": movie["title"],
-            "poster_path": movie["poster_path"],
-            "overview": movie["overview"],
-            "release_date": movie["release_date"],
-            "rating": movie.get("vote_average", 0),
-            "reviews": reviews,  
-            "created_at": firestore.SERVER_TIMESTAMP
-        })
-        return render(request, 'Movies/movie_detail.html', {'movie': movie, 'reviews': reviews})
-
-    raise Http404("Movie not found.")
 
 # Simulated pricing (in a real app, this would come from a database)
 MOVIE_PRICES = {

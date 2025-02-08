@@ -52,7 +52,7 @@
                 <p>{{ movie.overview }}</p>
                 <div class="grd-2-paragraphs-align">
                     <p class="text-align"><strong>Release Date:</strong> {{ movie.release_date }}</p>
-                    <p class="text-align"><strong>Vote Average:</strong> {{ movie.vote_average }}</p>
+                    <p class="text-align"><strong>Rating:</strong> {{ movie.rating }}</p>
                     <p class="text-align"><strong>Vote Count:</strong> {{ movie.vote_count }}</p>
                     <p class="text-align"><strong>Popularity:</strong> {{ movie.popularity }}</p>
                 </div>
@@ -77,15 +77,13 @@
             <h3>Reviews</h3>
         </div>
         <div class="reviews-card-holder">
-            {% if reviews %}
+            {% if reviews and reviews|length > 0 %}
             <div class="reviews-card-container">
                 {% for review in reviews %}
-                {% if review.content %}
                 <div class="reviews-card">
-                    <p class="reviews-author">{{ review.author }}</p>
+                    <p class="reviews-author"><strong>{{ review.author }}</strong></p>
                     <p class="reviews-content">{{ review.content }}</p>
                 </div>
-                {% endif %}
                 {% endfor %}
             </div>
             {% else %}
@@ -93,6 +91,7 @@
             {% endif %}
         </div>
     </div>
+    
 
 
 </body>
