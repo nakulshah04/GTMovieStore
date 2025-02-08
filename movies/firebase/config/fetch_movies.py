@@ -24,7 +24,7 @@ def update_movies():
     print("Fetching new movies...")
 
     movies = []
-    for page in range(1, 11):  
+    for page in range(1, 12):  
         response = requests.get(api_url, params={'api_key': api_key, 'language': 'en-US', 'page': page})
         if response.status_code == 200:
             results = response.json().get('results', [])
