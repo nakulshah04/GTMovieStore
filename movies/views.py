@@ -16,39 +16,41 @@ initialize_firebase()
 db = firestore.client()
 
 def homepage(request):
-    search_query = request.GET.get('q', '').strip()
+    db = firestore.client()
+
+    search_query = request.GET.get('q', '')
+
     sort_option = request.GET.get('sort', '')
 
     movies_ref = db.collection("Movies")
 
-    # Fetch all movies
-    movies = [doc.to_dict() for doc in movies_ref.stream()]
-
-    # Ensure each movie has an 'id'
-    for movie in movies:
-        movie["id"] = movie.get("id") or movie.get("document_id") or None  # Adjust based on your Firestore structure
-
-    # Remove movies without a valid 'id' to prevent NoReverseMatch errors
-    movies = [movie for movie in movies if movie.get("id")]
-
-    # Filter movies if a search query is provided
     if search_query:
-        movies = [movie for movie in movies if search_query.lower() in movie.get('title', '').lower()]
+        movies_ref = movies_ref.where("title", "contains", search_query)
 
-    # Sorting logic
+    # Apply sorting based on the selected sort option
     if sort_option == "title_asc":
-        movies.sort(key=lambda x: x.get("title", "").lower())
+        movies_ref = movies_ref.order_by("title", direction=firestore.Query.ASCENDING)
     elif sort_option == "title_desc":
-        movies.sort(key=lambda x: x.get("title", "").lower(), reverse=True)
+        movies_ref = movies_ref.order_by("title", direction=firestore.Query.DESCENDING)
     elif sort_option == "date_desc":
-        movies.sort(key=lambda x: x.get("release_date", ""), reverse=True)
+        movies_ref = movies_ref.order_by("created_at", direction=firestore.Query.DESCENDING)
     elif sort_option == "date_asc":
-        movies.sort(key=lambda x: x.get("release_date", ""))
+        movies_ref = movies_ref.order_by("created_at", direction=firestore.Query.ASCENDING)
 
-    return render(request, 'Homepage/homepage.html', {
-        "movies": movies,
-        "search_query": search_query
-    })
+    movies = movies_ref.stream()
+
+    movie_list = []
+    for movie in movies:
+        movie_data = movie.to_dict()
+        movie_list.append(movie_data)
+
+    context = {
+        'movies': movie_list,
+        'search_query': search_query,
+        'sort_option': sort_option
+    }
+
+    return render(request, 'homepage/homepage.html', context)
 
 def movie_detail(request, movie_id):
     """ Fetch detailed movie information and reviews from Firestore """
