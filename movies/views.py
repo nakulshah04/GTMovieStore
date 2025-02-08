@@ -21,8 +21,9 @@ def homepage(request):
 
     movies_ref = db.collection("Movies")
 
-    # Fetch all movies
-    movies = [doc.to_dict() for doc in movies_ref.stream()]
+    # Fetch all movies ordered by creation date (most recent first)
+    movies_query = movies_ref.order_by("created_at", direction=firestore.Query.DESCENDING)
+    movies = [doc.to_dict() for doc in movies_query.stream()]
 
     # Ensure each movie has an 'id'
     for movie in movies:
@@ -35,20 +36,21 @@ def homepage(request):
     if search_query:
         movies = [movie for movie in movies if search_query.lower() in movie.get('title', '').lower()]
 
-    # Sorting logic
+    # Sorting logic (sorting by title or release date based on the user's choice)
     if sort_option == "title_asc":
         movies.sort(key=lambda x: x.get("title", "").lower())
     elif sort_option == "title_desc":
         movies.sort(key=lambda x: x.get("title", "").lower(), reverse=True)
-    elif sort_option == "date_desc":
-        movies.sort(key=lambda x: x.get("release_date", ""), reverse=True)
     elif sort_option == "date_asc":
         movies.sort(key=lambda x: x.get("release_date", ""))
+    elif sort_option == "date_desc":
+        movies.sort(key=lambda x: x.get("release_date", ""), reverse=True)
 
     return render(request, 'Homepage/homepage.html', {
         "movies": movies,
         "search_query": search_query
     })
+
 
 def movie_detail(request, movie_id):
     """ Fetch detailed movie information and reviews from Firestore """
