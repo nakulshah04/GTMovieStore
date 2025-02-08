@@ -41,17 +41,16 @@
         <h1 class="text-center my-4">Now Playing Movies</h1>
         
         <form method="GET" action="{% url 'homepage' %}" class="d-flex justify-content-center mb-4">
-            <input class="form-control me-2 w-50" type="search" name="q" placeholder="Search movies..." aria-label="Search" value="{{ search_query }}">
+            <input class="form-control me-2 w-50" type="search" name="q" placeholder="Search movies..." aria-label="Search" value="{{ request.GET.q }}">
             <select class="form-select me-2 w-25" name="sort">
                 <option value="">Sort by</option>
-                <option value="title_asc" {% if sort_option == "title_asc" %}selected{% endif %}>Title (A-Z)</option>
-                <option value="title_desc" {% if sort_option == "title_desc" %}selected{% endif %}>Title (Z-A)</option>
-                <option value="date_desc" {% if sort_option == "date_desc" %}selected{% endif %}>Release Date (Newest First)</option>
-                <option value="date_asc" {% if sort_option == "date_asc" %}selected{% endif %}>Release Date (Oldest First)</option>
+                <option value="title_asc" {% if request.GET.sort == "title_asc" %}selected{% endif %}>Title (A-Z)</option>
+                <option value="title_desc" {% if request.GET.sort == "title_desc" %}selected{% endif %}>Title (Z-A)</option>
+                <option value="date_desc" {% if request.GET.sort == "date_desc" %}selected{% endif %}>Release Date (Newest First)</option>
+                <option value="date_asc" {% if request.GET.sort == "date_asc" %}selected{% endif %}>Release Date (Oldest First)</option>
             </select>
             <button class="btn btn-outline-light" type="submit">Apply</button>
         </form>
-        
 
         {% if search_query and not movies %}
             <p class="text-center text-warning">No movies found for "{{ search_query }}"</p>
@@ -59,7 +58,6 @@
 
         <div class="row justify-content-center">
             {% for movie in movies %}
-            {% if movie.id %}
             <div class="col-6 col-md-4 col-lg-3 mb-4">
                 <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none text-light">
                     <div class="movie-card">
@@ -68,12 +66,8 @@
                     </div>
                 </a>
             </div>
-            {% else %}
-            <p class="text-center text-danger">Movie ID missing for "{{ movie.title }}"</p>
-            {% endif %}
             {% endfor %}
         </div>
-        
     </div>
     <div class="footer">
         <p>© 2025 GT Movies Store</p>
