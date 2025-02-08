@@ -21,22 +21,17 @@ def homepage(request):
 
     movies_ref = db.collection("Movies")
 
-    # Fetch all movies ordered by creation date (most recent first)
     movies_query = movies_ref.order_by("created_at", direction=firestore.Query.DESCENDING)
     movies = [doc.to_dict() for doc in movies_query.stream()]
 
-    # Ensure each movie has an 'id'
     for movie in movies:
         movie["id"] = movie.get("id") or movie.get("document_id") or None  # Adjust based on your Firestore structure
 
-    # Remove movies without a valid 'id' to prevent NoReverseMatch errors
     movies = [movie for movie in movies if movie.get("id")]
 
-    # Filter movies if a search query is provided
     if search_query:
         movies = [movie for movie in movies if search_query.lower() in movie.get('title', '').lower()]
 
-    # Sorting logic (sorting by title or release date based on the user's choice)
     if sort_option == "title_asc":
         movies.sort(key=lambda x: x.get("title", "").lower())
     elif sort_option == "title_desc":
