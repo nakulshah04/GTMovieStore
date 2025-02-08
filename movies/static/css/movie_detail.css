@@ -7,6 +7,9 @@ body {
     color: white;
 }
 
+
+
+
 .movie-detail-holder {
     height: 75vh;
     display: flex;
@@ -137,4 +140,39 @@ body {
 .reviews-card:hover {
     transform: translateY(-5px);
     cursor: pointer;
+}
+
+.add-review-form{
+    /* background-color: pink; */
+    padding: 10px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    margin-top: 30px;
+}
+
+.form-control {
+    background-color: transparent !important; 
+    color: white !important; 
+    border: 1px solid #ccc; 
+}
+
+
+
+.not-user-err{
+    padding: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 15vh;
+}
+
+.not-user-err p{
+    margin: 0;
+    padding: 0;
+
+    font-size: 25px;
 }
