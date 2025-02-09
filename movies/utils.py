@@ -1,3 +1,8 @@
+# PLEASE DONT CHANGE ANYTHING TO THIS. TOOK ME LONG TIME TO PROGRAM - NETHANN 
+
+# THIS BASICALLY IS FOR FETCHING THE MOVIES FROM THE API
+# DM NETHAN how to add more movies. 
+
 import requests
 from .models import Movie
 
@@ -6,7 +11,7 @@ BASE_URL = 'https://api.themoviedb.org/3'
 
 def fetch_movies():
     page = 1
-    while page <= 6:  # Fetch 6 pages of movies
+    while page <= 10: 
         response = requests.get(
             f'{BASE_URL}/movie/popular',
             params={
@@ -20,7 +25,6 @@ def fetch_movies():
             movies = data['results']
             
             for movie_data in movies:
-                # Extract the necessary details
                 title = movie_data.get('title')
                 description = movie_data.get('overview')
                 release_date = movie_data.get('release_date')
@@ -30,7 +34,6 @@ def fetch_movies():
                 vote_average = movie_data.get('vote_average', 0.0)
                 popularity = movie_data.get('popularity', 0.0)
 
-                # Save the movie to the database
                 Movie.objects.update_or_create(
                     tmdb_id=tmdb_id,
                     defaults={
