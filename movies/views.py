@@ -17,7 +17,7 @@ def homepage(request):
     search_query = request.GET.get('q', '').strip()
     sort_option = request.GET.get('sort', '')
 
-    movies = Movie.objects.all().order_by('?')  # Randomly order the movies
+    movies = Movie.objects.all().order_by('?')  
 
     if search_query:
         movies = movies.filter(title__icontains=search_query)
