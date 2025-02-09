@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from .models import Movie  
+from .models import Review
 
 
 def homepage(request):
@@ -198,38 +199,30 @@ def register_view(request):
 
 @login_required
 def add_review(request, movie_id):
+    movie = get_object_or_404(Movie, id=movie_id)
+    
+    # Check if user already has a review for this movie
+    review = Review.objects.filter(movie=movie, user=request.user).first()
 
-    movie_ref = db.collection('Movies').document(movie_id)
-    movie_doc = movie_ref.get()
-
-    if not movie_doc.exists:
-        raise Http404("Movie not found.")
-
-    reviews_ref = db.collection('Reviews')
-    existing_review_query = reviews_ref.where('movie_id', '==', movie_id).where('user_id', '==', str(request.user.id)).limit(1)
-    existing_review = list(existing_review_query.stream())
-
-    if existing_review:
-        review_doc = existing_review[0]
-        review_ref = reviews_ref.document(review_doc.id)
-        review_ref.update({
-            'content': request.POST['content'],
-            'updated_at': firestore.SERVER_TIMESTAMP
-        })
-        messages.success(request, "Review updated successfully.")
-    else:
-        review_ref = reviews_ref.add({
-            'movie_id': movie_id,
-            'user_id': str(request.user.id),
-            'author': request.user.username,
-            'content': request.POST['content'],
-            'created_at': firestore.SERVER_TIMESTAMP,
-            'updated_at': firestore.SERVER_TIMESTAMP
-        })
-        messages.success(request, "Review added successfully.")
+    if request.method == 'POST':
+        content = request.POST['content']
+        
+        if review:
+            # Update existing review
+            review.content = content
+            review.save()
+            messages.success(request, "Review updated successfully.")
+        else:
+            # Add new review
+            review = Review.objects.create(
+                movie=movie,
+                user=request.user,
+                author=request.user.username,
+                content=content
+            )
+            messages.success(request, "Review added successfully.")
 
     return redirect('movie_detail', movie_id=movie_id)
-
 
 
 
