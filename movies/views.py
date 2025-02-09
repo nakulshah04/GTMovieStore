@@ -17,14 +17,11 @@ def homepage(request):
     search_query = request.GET.get('q', '').strip()
     sort_option = request.GET.get('sort', '')
 
-    # Fetch movies from the database (Django model)
-    movies = Movie.objects.all()
+    movies = Movie.objects.all().order_by('?')  # Randomly order the movies
 
     if search_query:
-        # Filter movies based on search query
         movies = movies.filter(title__icontains=search_query)
 
-    # Sort movies based on the chosen option
     if sort_option == "title_asc":
         movies = movies.order_by('title')
     elif sort_option == "title_desc":
@@ -40,15 +37,13 @@ def homepage(request):
     })
 
 
-
 def movie_detail(request, movie_id):
     movie = Movie.objects.get(id=movie_id)
     return render(request, 'Movies/movie_detail.html', {'movie': movie})
 
 
-# Simulated pricing (in a real app, this would come from a database)
 MOVIE_PRICES = {
-    1400383: 9.99,  # Example Movie ID → Price
+    1400383: 9.99, 
     299534: 12.99,
     76341: 7.99,
 }
@@ -63,7 +58,7 @@ def cart(request):
     cart_total = 0
 
     for movie_id, movie_data in cart.items():
-        if isinstance(movie_data, int):  # Fix for incorrectly stored integer values
+        if isinstance(movie_data, int):  
             movie_data = {"title": f"Movie {movie_id}", "poster": "", "quantity": movie_data}
 
         cart_items.append({
