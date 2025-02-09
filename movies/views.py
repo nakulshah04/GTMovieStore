@@ -10,68 +10,40 @@ from django.contrib import messages
 from django.http import JsonResponse
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
+from .models import Movie  
 
-
-initialize_firebase()
-
-db = firestore.client()
 
 def homepage(request):
     search_query = request.GET.get('q', '').strip()
     sort_option = request.GET.get('sort', '')
 
-    movies_ref = db.collection("Movies")
-
-    movies_query = movies_ref.order_by("created_at", direction=firestore.Query.DESCENDING)
-    movies = [doc.to_dict() for doc in movies_query.stream()]
-
-    for movie in movies:
-        movie["id"] = movie.get("id") or movie.get("document_id") or None  # Adjust based on your Firestore structure
-
-    movies = [movie for movie in movies if movie.get("id")]
+    # Fetch movies from the database (Django model)
+    movies = Movie.objects.all()
 
     if search_query:
-        movies = [movie for movie in movies if search_query.lower() in movie.get('title', '').lower()]
+        # Filter movies based on search query
+        movies = movies.filter(title__icontains=search_query)
 
+    # Sort movies based on the chosen option
     if sort_option == "title_asc":
-        movies.sort(key=lambda x: x.get("title", "").lower())
+        movies = movies.order_by('title')
     elif sort_option == "title_desc":
-        movies.sort(key=lambda x: x.get("title", "").lower(), reverse=True)
+        movies = movies.order_by('-title')
     elif sort_option == "date_asc":
-        movies.sort(key=lambda x: x.get("release_date", ""))
+        movies = movies.order_by('release_date')
     elif sort_option == "date_desc":
-        movies.sort(key=lambda x: x.get("release_date", ""), reverse=True)
+        movies = movies.order_by('-release_date')
 
     return render(request, 'Homepage/homepage.html', {
         "movies": movies,
-        "search_query": search_query
+        "search_query": search_query,
     })
 
 
+
 def movie_detail(request, movie_id):
-    """ Fetch detailed movie information and reviews from Firestore """
-
-    movie_id = str(movie_id)
-
-    movies_ref = db.collection("Movies")
-    reviews_ref = db.collection("Reviews")
-
-    # Get movie details from Firestore
-    movie_doc = movies_ref.document(movie_id).get()
-
-    if movie_doc.exists:
-        movie = movie_doc.to_dict()
-
-        # Get reviews for the movie from Firestore
-        reviews_query = reviews_ref.where('movie_id', '==', movie_id).stream()
-        reviews = [review.to_dict() for review in reviews_query]
-
-        if not reviews:
-            reviews = [{"author": "Anonymous", "content": "No reviews available for this movie."}]
-
-        return render(request, 'Movies/movie_detail.html', {'movie': movie, 'reviews': reviews})
-    else:
-        raise Http404("Movie not found.")
+    movie = Movie.objects.get(id=movie_id)
+    return render(request, 'Movies/movie_detail.html', {'movie': movie})
 
 
 # Simulated pricing (in a real app, this would come from a database)
