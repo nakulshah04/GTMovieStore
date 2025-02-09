@@ -67,7 +67,7 @@
         </div>
     </div>
 
-    {% if user.is_authenticated %}
+    <!-- {% if user.is_authenticated %}
     <div class="container mt-4">
         <h3>Add a Review</h3>
         <form method="POST" action="{% url 'add_review' movie.id %}">
@@ -78,9 +78,9 @@
             <button type="submit" class="btn btn-primary">Submit Review</button>
         </form>
     </div>
-    {% endif %}
+    {% endif %} -->
 
-    <div class="container mt-4">
+    <!-- <div class="container mt-4">
         <h3>Reviews</h3>
         {% for review in reviews %}
         <div class="card mb-2">
@@ -92,7 +92,7 @@
         </div>
         {% empty %}
         <p>No reviews yet. Be the first to review this movie!</p>
-        {% endfor %}
+        {% endfor %} -->
     </div>
 
 </body>

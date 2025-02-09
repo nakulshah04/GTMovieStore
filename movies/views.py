@@ -1,3 +1,5 @@
+from .models import Movie  
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import Http404
 from movies.firebase.config.firebase_init import initialize_firebase
@@ -10,8 +12,8 @@ from django.contrib import messages
 from django.http import JsonResponse
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
-from .models import Movie  
-from .models import Review
+
+
 
 
 def homepage(request):
@@ -199,28 +201,6 @@ def register_view(request):
 
 @login_required
 def add_review(request, movie_id):
-    movie = get_object_or_404(Movie, id=movie_id)
-    
-    # Check if user already has a review for this movie
-    review = Review.objects.filter(movie=movie, user=request.user).first()
-
-    if request.method == 'POST':
-        content = request.POST['content']
-        
-        if review:
-            # Update existing review
-            review.content = content
-            review.save()
-            messages.success(request, "Review updated successfully.")
-        else:
-            # Add new review
-            review = Review.objects.create(
-                movie=movie,
-                user=request.user,
-                author=request.user.username,
-                content=content
-            )
-            messages.success(request, "Review added successfully.")
 
     return redirect('movie_detail', movie_id=movie_id)
 
