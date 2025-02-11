@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Edit Review for {{ movie.title }}</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="rating">Rating (1-10):</label>
+            <input type="number" name="rating" id="rating" class="form-control" min="1" max="10" value="{{ review.rating }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="comment">Comment:</label>
+            <textarea name="comment" id="comment" class="form-control" rows="4" required>{{ review.comment }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Review</button>
+        <a href="{% url 'movie_detail' movie.id %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

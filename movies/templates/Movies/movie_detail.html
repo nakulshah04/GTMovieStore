@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie.title }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/movie_detail.css' %}?v={{ timestamp }}">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">GT Movies</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'cart' %}">Cart</a></li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="movie-detail-holder">
+        <div class="container movie-container">
+            <div class="movie-detail-grd-1">
+                <h1>{{ movie.title }}</h1>
+                {% if movie.poster_url %}
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}">
+                {% else %}
+                <img src="/static/default.jpg" alt="No image available">
+                {% endif %}
+            </div>
+
+            <div class="movie-detail-grd-2">
+                <p><strong>Description:</strong> {{ movie.description }}</p>
+                <div class="grd-2-paragraphs-align">
+                    <p class="text-align"><strong>Release Date:</strong> {{ movie.release_date }}</p>
+                    <p class="text-align"><strong>Rating:</strong> {{ movie.vote_average }}/10</p>
+                    <p class="text-align"><strong>Vote Count:</strong> {{ movie.vote_count }}</p>
+                    <p class="text-align"><strong>Popularity:</strong> {{ movie.popularity }}</p>
+                </div>
+
+                <div class="details-buttons-holder">
+                    <form action="{% url 'add_to_cart' movie.id %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success">Add to Cart</button>
+                    </form>
+                    <a href="/" class="btn btn-primary back-btn">Back to Movies</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container mt-4">
+        <h3>{{ user_review.id|default:"Add" }} a Review</h3>
+        <form id="review-form" method="POST" action="{% url 'add_review' movie.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="review_id" id="review-id" value=""> <!-- Hidden field for review ID -->
+            <div class="mb-3">
+                <label for="rating">Rating (1-10):</label>
+                <input type="number" name="rating" id="rating" class="form-control" min="1" max="10" required>
+            </div>
+            <div class="mb-3">
+                <label for="comment">Comment:</label>
+                <textarea name="comment" id="comment" class="form-control" rows="4" placeholder="Write your review here..." required></textarea>
+            </div>
+            <button type="submit" id="submit-button" class="btn btn-primary">Submit Review</button>
+            <button type="button" id="cancel-button" class="btn btn-secondary">Cancel</button> <!-- Cancel button -->
+        </form>
+    </div>
+    
+    <div class="container mt-4">
+        <h3>Reviews</h3>
+        {% for review in reviews %}
+        <div class="review-card mb-2" id="review-{{ review.id }}">
+            <div class="review-card-body">
+                <h5 class="card-title">{{ review.user.username }}</h5>
+                <p><strong>Rating:</strong> {{ review.rating }}/10</p>
+                <p>{{ review.comment }}</p>
+                {% if user == review.user %}
+                <button class="btn btn-sm btn-primary edit-review-btn" data-review-id="{{ review.id }}" data-rating="{{ review.rating }}" data-comment="{{ review.comment }}">Edit</button>
+                <form method="POST" action="{% url 'delete_review' movie.id review.id %}">
+                    {% csrf_token %}
+                    <button name="delete" type="button" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <p>No reviews yet. Be the first to review this movie!</p>
+        {% endfor %}
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        // Handle Edit Button Click
+        $('.edit-review-btn').click(function() {
+            // Get data from the clicked button
+            const reviewId = $(this).data('review-id');
+            const rating = $(this).data('rating');
+            const comment = $(this).data('comment');
+    
+            // Populate the form fields
+            $('#review-id').val(reviewId); // Set the hidden field with the review ID
+            $('#rating').val(rating);
+            $('#comment').val(comment);
+    
+            // Change the submit button text
+            $('#submit-button').text('Save Review');
+        });
+    
+        // Reset form on Cancel or page reload
+        $('#cancel-button').click(function() {
+            // Clear all form fields
+            $('#review-id').val(''); // Clear review ID (hidden field)
+            $('#rating').val(''); // Reset rating field
+            $('#comment').val(''); // Reset comment field
+            // Reset the submit button text
+            $('#submit-button').text('Submit Review');
+        });
+
+        $('.delete-review-btn').click(function(e) {
+            e.preventDefault(); // Prevent default form submission
+            const reviewId = $(this).data('review-id');
+            const url = `/movie/${movie_id}/review/${reviewId}/delete/`;
+
+            if (confirm('Are you sure you want to delete this review?')) {
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            $(`#review-${reviewId}`).remove(); // Remove the review from the DOM
+                            alert('Review deleted successfully');
+                        } else {
+                            alert(response.message || 'Failed to delete review.');
+                        }
+                    },
+                    error: function() {
+                        alert('An error occurred while trying to delete the review.');
+                    }
+                });
+            }
+        });
+    });
+    </script>
+
+
+</body>
+</html>

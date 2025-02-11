@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Delete Review</h2>
+    <p>Are you sure you want to delete your review for "{{ review.movie.title }}"?</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="button" class="btn btn-danger">Confirm Delete</button>
+        <a href="{% url 'movie_detail' review.movie.id %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
