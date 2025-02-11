@@ -43,7 +43,7 @@ def homepage(request):
 
 def movie_detail(request, movie_id):
     movie = get_object_or_404(Movie, pk=movie_id)
-    reviews = movie.reviews.all()  # This will get all reviews related to the movie
+    reviews = movie.reviews.all() 
 
     if request.method == 'POST' and request.user.is_authenticated:
         rating = request.POST.get('rating')
