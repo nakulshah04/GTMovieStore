@@ -174,3 +174,19 @@ body {
 
     font-size: 25px;
 }
+
+.review-card{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1em;
+}
+
+.review-card-body{
+    background-color: var(--card-clr);
+}
+
+
+.review-card-body p{
+    padding: 0;
+    margin: 0;
+}

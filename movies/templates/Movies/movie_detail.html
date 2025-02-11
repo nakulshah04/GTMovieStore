@@ -11,7 +11,6 @@
 </head>
 
 <body>
-
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="/">GT Movies</a>
@@ -35,7 +34,6 @@
 
     <div class="movie-detail-holder">
         <div class="container movie-container">
-
             <div class="movie-detail-grd-1">
                 <h1>{{ movie.title }}</h1>
                 {% if movie.poster_url %}
@@ -46,7 +44,7 @@
             </div>
 
             <div class="movie-detail-grd-2">
-                <p><strong>Description:</strong> {{ movie.description }}</p> <!-- Added description here -->
+                <p><strong>Description:</strong> {{ movie.description }}</p>
                 <div class="grd-2-paragraphs-align">
                     <p class="text-align"><strong>Release Date:</strong> {{ movie.release_date }}</p>
                     <p class="text-align"><strong>Rating:</strong> {{ movie.vote_average }}</p>
@@ -59,42 +57,45 @@
                         {% csrf_token %}
                         <button type="submit" class="btn btn-success">Add to Cart</button>
                     </form>
-
                     <a href="/" class="btn btn-primary back-btn">Back to Movies</a>
                 </div>
             </div>
-
         </div>
     </div>
 
-    <!-- {% if user.is_authenticated %}
+    {% if user.is_authenticated %}
     <div class="container mt-4">
         <h3>Add a Review</h3>
         <form method="POST" action="{% url 'add_review' movie.id %}">
             {% csrf_token %}
             <div class="mb-3">
-                <textarea name="content" class="form-control" rows="4" placeholder="Write your review here..." required></textarea>
+                <label for="rating">Rating (1-10):</label>
+                <input type="number" name="rating" id="rating" class="form-control" min="1" max="10" required>
+            </div>
+            <div class="mb-3">
+                <label for="comment">Comment:</label>
+                <textarea name="comment" id="comment" class="form-control" rows="4" placeholder="Write your review here..." required></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Submit Review</button>
         </form>
     </div>
-    {% endif %} -->
-
-    <!-- <div class="container mt-4">
+    {% endif %}
+    
+    <div class="container mt-4">
         <h3>Reviews</h3>
         {% for review in reviews %}
-        <div class="card mb-2">
-            <div class="card-body">
-                <h5 class="card-title">{{ review.author }}</h5>
-                <p class="card-text">{{ review.content }}</p>
-                <p class="text-muted">Reviewed on: {{ review.created_at }}</p>
+        <div class="review-card mb-2">
+            <div class="review-card-body">
+                <h5 class="card-title">{{ review.user.username }}</h5>
+                <p class="card-text"><strong>Rating:</strong> {{ review.rating }}/10</p>
+                <p class="card-text">{{ review.comment }}</p>
+                <p class="card-text">Reviewed on: {{ review.created_at }}</p>
             </div>
         </div>
         {% empty %}
         <p>No reviews yet. Be the first to review this movie!</p>
-        {% endfor %} -->
+        {% endfor %}
     </div>
-
+    
 </body>
-
 </html>

@@ -12,6 +12,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
+from .models import Movie, Review
 
 
 
@@ -41,8 +42,54 @@ def homepage(request):
 
 
 def movie_detail(request, movie_id):
-    movie = Movie.objects.get(id=movie_id)
-    return render(request, 'Movies/movie_detail.html', {'movie': movie})
+    movie = get_object_or_404(Movie, pk=movie_id)
+    reviews = movie.reviews.all()  # This will get all reviews related to the movie
+
+    if request.method == 'POST' and request.user.is_authenticated:
+        rating = request.POST.get('rating')
+        comment = request.POST.get('comment')
+        review = Review.objects.create(
+            movie=movie,
+            user=request.user,
+            rating=rating,
+            comment=comment
+        )
+        review.save()
+        return redirect('movie_detail', movie_id=movie.id)
+
+    return render(request, 'Movies/movie_detail.html', {'movie': movie, 'reviews': reviews})
+
+
+
+
+@login_required
+def add_review(request, movie_id):
+    movie = get_object_or_404(Movie, id=movie_id)
+
+    if movie.reviews.filter(user=request.user).exists():
+        messages.error(request, "You can only post one review per movie.")
+        return redirect("movie_detail", movie_id=movie.id)
+
+    if request.method == "POST":
+        rating = request.POST.get("rating")
+        comment = request.POST.get("comment").strip()
+
+        if not rating or not comment:
+            messages.error(request, "Both rating and comment are required.")
+            return redirect("movie_detail", movie_id=movie.id)
+
+        review = Review.objects.create(
+            movie=movie,
+            user=request.user,
+            rating=int(rating),
+            comment=comment
+        )
+
+        messages.success(request, "Review added successfully!")
+        return redirect("movie_detail", movie_id=movie.id)
+
+    return redirect("movie_detail", movie_id=movie.id)
+
 
 
 MOVIE_PRICES = {
@@ -93,7 +140,7 @@ def add_to_cart(request, movie_id):
             "quantity": cart.get(movie_id, {}).get("quantity", 0) + 1
         }
 
-        request.session['cart'] = cart  # Save updated cart in session
+        request.session['cart'] = cart
         messages.success(request, f"Added {movie_data['title']} to cart!")
 
     return redirect("cart")
@@ -121,13 +168,13 @@ def remove_from_cart(request, movie_id):
     if movie_id in cart:
         del cart[movie_id]  
 
-    request.session['cart'] = cart  # Save updated cart
+    request.session['cart'] = cart  
     messages.success(request, "Movie removed from cart!")
     return redirect("cart")
 
 def checkout(request):
     """ Checkout Process """
-    request.session['cart'] = {}  # Clear cart after checkout
+    request.session['cart'] = {}  
     messages.success(request, "Purchase successful! 🎉")
     return redirect("homepage")
 
@@ -156,6 +203,7 @@ def login_view(request):
 
     return render(request, 'Auth/login.html')  
 
+
 def register_view(request):
     if request.user.is_authenticated:
         return redirect('homepage')
@@ -166,6 +214,7 @@ def register_view(request):
         password1 = request.POST.get('password1', '')
         password2 = request.POST.get('password2', '')
 
+        # Validation checks
         if not username or not email or not password1 or not password2:
             messages.error(request, "All fields are required.")
         elif password1 != password2:
@@ -175,34 +224,17 @@ def register_view(request):
         elif User.objects.filter(email=email).exists():
             messages.error(request, "Email already in use.")
         else:
-            # Create the user in Django
-            user = User.objects.create_user(username=username, email=email, password=password1)
-            user.save()
-
-            user_data = {
-                "username": username,
-                "email": email,
-                "uid": str(user.id),  
-                "created_at": firestore.SERVER_TIMESTAMP  
-            }
-
             try:
-                db.collection('RegisteredUsers').document(str(user.id)).set(user_data)
+                user = User.objects.create_user(username=username, email=email, password=password1)
+                user.save()
+
                 messages.success(request, "Account created successfully! You can now log in.")
                 return redirect('login')
             except Exception as e:
-                messages.error(request, "Failed to register user in Firestore. Please try again later.")
+                messages.error(request, f"An error occurred: {str(e)}")
+                return redirect('register')
 
     return render(request, 'Auth/register.html')
-
-
-
-
-
-@login_required
-def add_review(request, movie_id):
-
-    return redirect('movie_detail', movie_id=movie_id)
 
 
 

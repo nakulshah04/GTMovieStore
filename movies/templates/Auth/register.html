@@ -30,6 +30,15 @@
     <div class="container text-center">
         <div class="register-container mx-auto">
             <h2 class="mb-4">Register</h2>
+            
+            {% if messages %}
+                <div class="alert alert-danger">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
             <form method="POST">
                 {% csrf_token %}
                 <div class="mb-3 text-start">
