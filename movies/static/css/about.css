@@ -5,7 +5,7 @@ body {
 
 .hero-section {
     padding: 60px 20px;
-    background-color: #fff;
+    background-color: lightgrey;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -18,7 +18,7 @@ body {
 .team-section {
     margin-top: 50px;
     padding: 50px 20px;
-    background-color: #f1f1f1;
+    background-color: lightslategray;
 }
 
 .team-img {
@@ -35,6 +35,63 @@ body {
     color: #fff;
 }
 
+/*Style for the toggle switch*/
+.theme-switch {
+    display: inline-block;
+    height: 20px; /* Adjust height */
+    position: relative;
+    width: 40px; /* Adjust width */
+    vertical-align: middle;
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-bottom: 5px;
+}
+
+.theme-switch input {
+    display: none;
+}
+
+.slider {
+    background-color: #ccc;
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: 0.4s;
+    border-radius: 20px; /* Adjust border-radius */
+}
+
+.slider:before {
+    background-color: white;
+    bottom: 2px; /* Adjust position */
+    content: "";
+    height: 16px; /* Adjust height */
+    left: 2px; /* Adjust position */
+    position: absolute;
+    transition: 0.4s;
+    width: 16px; /* Adjust width */
+    border-radius: 50%; /* Adjust border-radius */
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px); /* Adjust translate */
+}
+
+/* Rounded slider */
+.slider.round {
+    border-radius: 20px; /* Adjust border-radius */
+}
+
+.slider.round:before {
+    border-radius: 50%; /* Adjust border-radius */
+}
+
 .team-list {
     list-style-type: none;
     padding: 0;
@@ -44,4 +101,14 @@ body {
 .team-list li {
     font-size: 18px;
     padding: 5px 0;
+}
+
+.btn-outline-light {
+    color: var(--text-color);
+    border-color: var(--text-color);
+}
+
+.btn-outline-light:hover {
+    background-color: var(--text-color);
+    color: var(--background-color);
 }
