@@ -16,7 +16,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('register/', views.register_view, name='register'),
     path('logout/', views.logout_view, name='logout'),
-    path('movie/<int:movie_id>/review/add/', views.add_review, name='add_review'),  # Keeping one valid path
+    path('movie/<int:movie_id>/review/add/', views.add_review, name='add_review'),  
 
 ]
 
