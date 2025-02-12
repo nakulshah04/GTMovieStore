@@ -128,11 +128,10 @@ from django.contrib import messages
 from .models import Movie  
 
 def add_to_cart(request, movie_id):
-    """ Add Movie to Cart from Detail Page Correctly """
-    movie = get_object_or_404(Movie, id=movie_id)  # Ensure correct movie is retrieved
+    movie = get_object_or_404(Movie, id=movie_id)  
     cart = request.session.get('cart', {})
 
-    movie_id_str = str(movie_id)  # Ensure consistent session key format
+    movie_id_str = str(movie_id)  
 
     if movie_id_str in cart:
         cart[movie_id_str]["quantity"] += 1
@@ -143,7 +142,7 @@ def add_to_cart(request, movie_id):
             "quantity": 1
         }
 
-    request.session['cart'] = cart  # Save cart in session
+    request.session['cart'] = cart  
     messages.success(request, f"Added {movie.title} to cart!")
 
     return redirect("cart")
