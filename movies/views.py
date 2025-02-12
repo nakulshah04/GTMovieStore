@@ -186,7 +186,7 @@ def update_cart(request, movie_id):
         if new_quantity > 0:
             cart[movie_id] = new_quantity
         else:
-            cart.pop(movie_id, None)  # Remove if quantity is 0
+            cart.pop(movie_id, None)  
         request.session['cart'] = cart
         messages.success(request, "Cart updated!")
     return redirect("cart")
@@ -247,7 +247,6 @@ def register_view(request):
         password1 = request.POST.get('password1', '')
         password2 = request.POST.get('password2', '')
 
-        # Validation checks
         if not username or not email or not password1 or not password2:
             messages.error(request, "All fields are required.")
         elif password1 != password2:
