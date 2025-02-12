@@ -2,7 +2,6 @@ from .models import Movie
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import Http404
-from movies.firebase.config.firebase_init import initialize_firebase
 from firebase_admin import firestore
 import requests
 from django.shortcuts import render, redirect
