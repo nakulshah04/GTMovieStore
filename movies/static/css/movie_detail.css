@@ -1,20 +1,22 @@
 :root {
-    --card-clr: rgba(20, 20, 20, 0.849);
+    --card-clr: rgba(20, 20, 20, 0.85);
 }
 
 body {
     background-color: black;
     color: white;
+
+    display: flex;
+    flex-direction: column;
+    gap: 5em;
 }
 
-
-
-
 .movie-detail-holder {
-    height: 75vh;
+    height: auto;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 40px;
 }
 
 .movie-container {
@@ -35,7 +37,6 @@ body {
     flex-direction: column;
     gap: 0.5em;
     margin-top: 60px;
-
 }
 
 .movie-detail-grd-1 h1 {
@@ -43,13 +44,9 @@ body {
     font-size: 40px;
 }
 
-.grd-2-paragraphs-align {
-    margin: 0;
-}
-
 .details-buttons-holder {
-    display: grid;
-    grid-template-rows: repeat(2, 1fr);
+    display: flex;
+    flex-direction: column;
     gap: 1em;
 }
 
@@ -57,136 +54,81 @@ body {
     width: 100%;
 }
 
-
-/* reviews holder is below */
-
-.reviews-holder {
-    margin: 20px;
-    padding: 10px;
-    border-radius: 8px;
-    margin-top: 50px;
-    margin-left: 80px;
-}
-
-.card-header h3 {
-    font-size: 30px;
-    font-weight: bold;
-    text-align: left;
-    margin-bottom: 20px;
-}
-
-.reviews-card-holder {
+.add-review-section {
     display: flex;
-    flex-wrap: wrap;
-    gap: 1em;
-    justify-content: space-around;
-}
-
-.reviews-card-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 1.5em;
-    width: 100%;
-}
-
-.reviews-card {
-    background-color: var(--card-clr);
-    border-radius: 8px;
-    padding: 15px;
-    height: 300px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: 0.1s ease-in;
-}
-
-.reviews-author {
-    font-weight: bold;
-    font-size: 18px;
-    color: #f2c35c;
-}
-
-.reviews-content {
-    font-size: 14px;
-    flex-grow: 1;
-    overflow-y: hidden;
-    transition: overflow-y 0.3s ease;
-    max-height: 180px;
-}
-
-.reviews-content:hover {
-    overflow-y: auto;
-}
-
-.reviews-content::-webkit-scrollbar {
-    width: 8px;
-}
-
-.reviews-content::-webkit-scrollbar-track {
-    background: #333;
-    border-radius: 10px;
-}
-
-.reviews-content::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 10px;
-}
-
-.reviews-content::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
-
-.reviews-card:hover {
-    transform: translateY(-5px);
-    cursor: pointer;
-}
-
-.add-review-form{
-    padding: 10px;
-
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
+    justify-content: center;
     margin-top: 30px;
 }
 
-.form-control {
-    background-color: transparent !important; 
-    color: white !important; 
-    border: 1px solid #ccc; 
+.add-review-card {
+    width: 70%;
+    padding: 15px;
+    border-radius: 5px;
 }
 
-
-
-.not-user-err{
-    padding: 10px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    height: 15vh;
-}
-
-.not-user-err p{
-    margin: 0;
-    padding: 0;
-
-    font-size: 25px;
-}
-
-.review-card{
+.user-review-card-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1em;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 1.5em;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
 }
 
-.review-card-body{
+.review-card {
+    border-radius: 8px;
+    padding: 15px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.review-card:hover {
+    transform: translateY(-5px);
+}
+
+.review-card-body {
     background-color: var(--card-clr);
+    padding: 15px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    width: 100%;
+}
+
+.review-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.review-actions .btn {
+    width: 48%;
 }
 
 
-.review-card-body p{
-    padding: 0;
-    margin: 0;
+textarea.form-control {
+    background-color: black !important;
+    color: white !important;
+    border: 1px solid #ccc !important;
+}
+
+textarea.form-control::placeholder {
+    color: white !important;
+    opacity: 1 !important;
+}
+
+.form-control {
+    background-color: black !important;
+    color: white !important;
+    border: 1px solid #6c757d !important;
+}
+
+
+@media (max-width: 768px) {
+    .user-review-card-grid {
+        grid-template-columns: 1fr; 
+    }
+    
+    .add-review-card {
+        width: 90%;
+    }
 }

@@ -1,0 +1,60 @@
+html, body {
+    background-color: black !important;
+    color: white !important;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+:root {
+    --card-clr: rgba(20, 20, 20, 0.849);
+}
+
+.edit-review-container {
+    background: var(--card-clr);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: none;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .edit-review-container {
+        width: 90%;
+    }
+}
+
+.edit-review-container .form-label {
+    font-weight: bold;
+}
+
+.edit-review-container select,
+.edit-review-container textarea {
+    background-color: #121212 !important;
+    color: white !important;
+    border: 1px solid #6c757d !important;
+}
+
+.edit-review-container textarea::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.edit-review-container button {
+    width: 100%;
+    padding: 2px;
+    font-size: 1.1rem;
+    border-radius: 5px;
+}
+
+.btn-success {
+    background-color: #198754 !important;
+    border-color: #198754;
+}
+
+.btn-secondary {
+    width: 100%;
+    margin-top: 10px;
+}

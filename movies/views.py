@@ -90,6 +90,37 @@ def add_review(request, movie_id):
     return redirect("movie_detail", movie_id=movie.id)
 
 
+@login_required
+def edit_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+
+    if review.user != request.user:
+        messages.error(request, "You cannot edit someone else's review.")
+        return redirect("movie_detail", movie_id=review.movie.id)
+
+    if request.method == "POST":
+        review.rating = request.POST.get("rating")
+        review.comment = request.POST.get("comment")
+        review.save()
+        messages.success(request, "Review updated successfully!")
+        return redirect("movie_detail", movie_id=review.movie.id)
+
+    return render(request, "Movies/edit_review.html", {"review": review})
+
+
+
+@login_required
+def delete_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+
+    if review.user != request.user:
+        messages.error(request, "You cannot delete someone else's review.")
+        return redirect("movie_detail", movie_id=review.movie.id)
+
+    review.delete()
+    messages.success(request, "Review deleted successfully!")
+    return redirect("movie_detail", movie_id=review.movie.id)
+
 
 MOVIE_PRICES = {
     1400383: 9.99, 
