@@ -2,9 +2,9 @@
 
 :root {
     --background-color: #ffffff;
-    --text-color: #000000; /* Dark text color for better visibility */
+    --text-color: #000000;
     --navbar-background: #f8f9fa;
-    --card-background: #afa9a9; /* Light grey background for movie cards */
+    --card-background: #afa9a9;
     --footer-background: #f8f9fa;
 }
 
@@ -31,39 +31,91 @@ body {
     margin-top: 20px;
 }
 
-.my-4 {
-    text-align: left;
-    font-size: 25px;
+/* 🎬 Movie Grid Layout */
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr); /* 8 columns */
+    gap: 10px;
+    padding: 20px;
+    justify-content: center;
 }
 
+/* 🎥 Movie Card */
 .movie-card {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
-    padding: 15px;
-    border-radius: 10px;
-    transition: transform 0.1s ease-in-out;
-    height: 100%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
 }
 
 .movie-card:hover {
     transform: translateY(-5px);
 }
 
-.movie-card img {
+/* 🎞️ Movie Image */
+.movie-poster {
+    position: relative;
     width: 100%;
-    border-radius: 10px;
+    height: auto;
+    border-radius: 8px;
+}
+
+.movie-poster img {
+    width: 100%;
+    height: auto;
+    max-height: 220px;
+    border-radius: 8px;
+    display: block;
+}
+
+/* 🎬 Movie Title Overlay */
+.movie-card .title-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Dark background for contrast */
+    color: #fff;
+    text-align: center;
+    padding: 8px 0;
+    font-size: 14px;
+}
+
+/* ⭐ HD Badge */
+.hd-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: #f7c30b;
+    color: black;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 3px 6px;
+    border-radius: 4px;
+}
+
+/* 🖥️ Responsive Adjustments */
+@media (max-width: 1400px) {
+    .movie-grid {
+        grid-template-columns: repeat(6, 1fr); /* 6 columns */
+    }
+}
+
+@media (max-width: 1000px) {
+    .movie-grid {
+        grid-template-columns: repeat(4, 1fr); /* 4 columns */
+    }
+}
+
+@media (max-width: 600px) {
+    .movie-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    }
 }
 
 .navbar {
     background-color: var(--navbar-background);
-}
-
-.navbar-toggler {
-    border: 1px solid var(--text-color);
-    padding: 5px;
 }
 
 .footer {
@@ -72,75 +124,4 @@ body {
     background-color: var(--footer-background);
     color: var(--text-color);
     margin-top: auto;
-}
-
-/* Style for the toggle switch */
-.theme-switch {
-    display: inline-block;
-    height: 20px; /* Adjust height */
-    position: relative;
-    width: 40px; /* Adjust width */
-    vertical-align: middle;
-    margin-top: 10px;
-    margin-left: 5px;
-    margin-bottom: 5px;
-}
-
-.theme-switch input {
-    display: none;
-}
-
-.slider {
-    background-color: #ccc;
-    bottom: 0;
-    cursor: pointer;
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    transition: 0.4s;
-    border-radius: 20px; /* Adjust border-radius */
-}
-
-.slider:before {
-    background-color: white;
-    bottom: 2px; /* Adjust position */
-    content: "";
-    height: 16px; /* Adjust height */
-    left: 2px; /* Adjust position */
-    position: absolute;
-    transition: 0.4s;
-    width: 16px; /* Adjust width */
-    border-radius: 50%; /* Adjust border-radius */
-}
-
-input:checked + .slider {
-    background-color: #2196F3;
-}
-
-input:checked + .slider:before {
-    transform: translateX(20px); /* Adjust translate */
-}
-
-/* Rounded slider */
-.slider.round {
-    border-radius: 20px; /* Adjust border-radius */
-}
-
-.slider.round:before {
-    border-radius: 50%; /* Adjust border-radius */
-}
-
-.movie-card h5 {
-    color: var(--text-color);
-}
-
-.btn-outline-light {
-    color: var(--text-color);
-    border-color: var(--text-color);
-}
-
-.btn-outline-light:hover {
-    background-color: var(--text-color);
-    color: var(--background-color);
 }
