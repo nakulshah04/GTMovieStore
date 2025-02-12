@@ -136,3 +136,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = 'homepage'
 LOGOUT_REDIRECT_URL = 'homepage'
+
+EMAIL_HOST_USER = "gtmovies2340@gmail.com"
+EMAIL_HOST_PASSWORD = "gtmoviestrial"
+
+# Forget password
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = 'ebzi ctut jlnd vvza'
