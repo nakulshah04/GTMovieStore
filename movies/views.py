@@ -123,27 +123,31 @@ def cart(request):
     return render(request, "Movies/cart.html", {"cart_items": cart_items})
 
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .models import Movie  
+
 def add_to_cart(request, movie_id):
-    """ Add Movie to Cart """
-    api_url = f'https://api.themoviedb.org/3/movie/{movie_id}'
-    api_key = 'f2169e05c3c7239e9f580445e0755083'
+    """ Add Movie to Cart from Detail Page Correctly """
+    movie = get_object_or_404(Movie, id=movie_id)  # Ensure correct movie is retrieved
+    cart = request.session.get('cart', {})
 
-    response = requests.get(api_url, params={'api_key': api_key, 'language': 'en-US'})
+    movie_id_str = str(movie_id)  # Ensure consistent session key format
 
-    if response.status_code == 200:
-        movie_data = response.json()
-        cart = request.session.get('cart', {})
-
-        cart[movie_id] = {
-            "title": movie_data["title"],
-            "poster": f"https://image.tmdb.org/t/p/w500{movie_data['poster_path']}",
-            "quantity": cart.get(movie_id, {}).get("quantity", 0) + 1
+    if movie_id_str in cart:
+        cart[movie_id_str]["quantity"] += 1
+    else:
+        cart[movie_id_str] = {
+            "title": movie.title,
+            "poster": movie.poster_url if movie.poster_url else "/static/default.jpg",
+            "quantity": 1
         }
 
-        request.session['cart'] = cart
-        messages.success(request, f"Added {movie_data['title']} to cart!")
+    request.session['cart'] = cart  # Save cart in session
+    messages.success(request, f"Added {movie.title} to cart!")
 
     return redirect("cart")
+
 
 def update_cart(request, movie_id):
     """ Update Cart Quantity """
