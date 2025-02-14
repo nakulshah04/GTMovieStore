@@ -36,9 +36,9 @@ body {
 
 /* 🎬 Movie Grid Layout */
 .movie-grid {
-    display: grid;
+    display: flex;
     grid-template-columns: repeat(8, 1fr); /* 8 columns */
-    gap: 25px; /* Increased spacing between movies */
+    gap: 15px; /* Increased spacing between movies */
     padding: 20px;
     justify-content: center;
 }
@@ -46,12 +46,14 @@ body {
 /* 🎥 Movie Card */
 .movie-card {
     position: relative;
+    width: 100%; /* Ensures proper alignment */
+    max-width: 160px; /* Adjusted for better fit */
     border-radius: 12px;
     overflow: hidden;
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     background-color: transparent;
     cursor: pointer;
-    margin-bottom: 25px; /* Add extra space between rows */
+    margin-bottom: 15px; /* Ensures even spacing */
 }
 
 .movie-card:hover {
@@ -63,7 +65,7 @@ body {
 .movie-poster {
     position: relative;
     width: 100%;
-    max-width: 220px; /* Adjusted for better alignment */
+    max-width: 170px; /* Adjusted for better alignment */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -117,7 +119,7 @@ body {
 /* Responsive Fixes */
 @media (max-width: 1400px) {
     .movie-grid {
-        grid-template-columns: repeat(6, 1fr); /* 6 columns */
+        grid-template-columns: repeat(8, 1fr); /* 6 columns */
     }
 }
 

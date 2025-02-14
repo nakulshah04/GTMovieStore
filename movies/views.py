@@ -13,6 +13,7 @@ from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from .models import Movie, Review
 from .models import Order
+from django.utils import timezone
 
 
 
@@ -25,9 +26,14 @@ def homepage(request):
     movies = Movie.objects.all()
 
     # Featured Categories
-    trending_movies = movies.order_by('-popularity')[:10]
-    top_rated = movies.order_by('-vote_average')[:10]
-    new_releases = movies.order_by('-release_date')[:10]
+    trending_movies = Movie.objects.order_by('-popularity')[:12]
+    top_rated_movies = Movie.objects.order_by('-vote_average')[:12]
+    now_playing_movies = Movie.objects.filter(
+        release_date__isnull=False, 
+        release_date__lte=timezone.now()
+    ).order_by('-release_date')[:12]  # Get the 12 most recent movies
+    upcoming_movies = Movie.objects.filter(release_date__gt=timezone.now()).order_by('release_date')[:12]
+    new_releases = Movie.objects.order_by('-release_date')[:12]
 
     # Apply search filter
     if search_query:
@@ -48,10 +54,11 @@ def homepage(request):
     # Pass everything into the context
     context = {
         'trending_movies': trending_movies,
-        'top_rated': top_rated,
+        'top_rated_movies': top_rated_movies,
+        'now_playing_movies': now_playing_movies,
+        'upcoming_movies': upcoming_movies,
         'new_releases': new_releases,
-        'movies': movies,  # Keep full movie list for display
-        'search_query': search_query,
+        'movies': movies,
     }
 
     return render(request, 'Homepage/homepage.html', context)

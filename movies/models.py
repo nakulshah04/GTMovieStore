@@ -9,6 +9,7 @@ class Movie(models.Model):
     description = models.TextField()
     release_date = models.DateField()
     poster_url = models.URLField()
+    backdrop_url = models.URLField(blank=True, null=True)  # ✅ Add this line
     vote_count = models.IntegerField(default=0)
     vote_average = models.FloatField(default=0.0)
     popularity = models.FloatField(default=0.0)
