@@ -28,72 +28,80 @@ body {
 }
 
 .movie-container {
-    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
 }
 
 /* 🎬 Movie Grid Layout */
 .movie-grid {
     display: grid;
     grid-template-columns: repeat(8, 1fr); /* 8 columns */
-    gap: 10px;
+    gap: 25px; /* Increased spacing between movies */
     padding: 20px;
     justify-content: center;
 }
 
 /* 🎥 Movie Card */
-.movie-card:hover {
-    transform: translateY(-5px);
-}
-
-#test{
-    background-color: blue;
-}
-
 .movie-card {
     position: relative;
+    border-radius: 12px;
     overflow: hidden;
-    border-radius: 8px;
-    transition: transform 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    background-color: transparent;
     cursor: pointer;
-    width: 100%;
-    max-width: 200px; /* Ensures a reasonable size limit */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    margin-bottom: 25px; /* Add extra space between rows */
 }
 
+.movie-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(255, 255, 255, 0.1);
+}
+
+/* 🎞️ Movie Image */
 .movie-poster {
+    position: relative;
     width: 100%;
-    aspect-ratio: 2 / 3; /* Locks in the correct aspect ratio */
+    max-width: 220px; /* Adjusted for better alignment */
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-
 .movie-poster img {
     width: 100%;
-    height: 100%;
-    object-fit: contain; /* Ensures no stretching or cropping */
-    border-radius: 8px;
-    display: block;
+    height: auto;
+    object-fit: cover; /* Ensure full coverage */
+    border-radius: 12px;
+    transition: opacity 0.3s ease-in-out;
 }
 
-
-
-/* 🎬 Movie Title Overlay */
-.movie-card .title-overlay {
+/* 🎬 Movie Title Inside the Card */
+.movie-info {
     position: absolute;
     bottom: 0;
-    left: 0;
     width: 100%;
-    background: rgba(0, 0, 0, 0.7); /* Dark background for contrast */
-    color: #fff;
+    background: rgba(0, 0, 0, 0.5); /* Reduced opacity for better visibility */
+    padding: 5px 0;
     text-align: center;
-    padding: 8px 0;
-    font-size: 14px;
+    transition: opacity 0.3s ease-in-out;
 }
 
+.movie-info h6 {
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+    margin: 0;
+    padding: 5px 0;
+}
+
+.movie-card:hover .movie-info {
+    opacity: 0; /* Fully hides the title when hovered */
+}
+
+/* ⭐ HD Badge */
 .hd-badge {
     position: absolute;
     top: 8px;
@@ -106,7 +114,24 @@ body {
     border-radius: 4px;
 }
 
+/* Responsive Fixes */
+@media (max-width: 1400px) {
+    .movie-grid {
+        grid-template-columns: repeat(6, 1fr); /* 6 columns */
+    }
+}
 
+@media (max-width: 1000px) {
+    .movie-grid {
+        grid-template-columns: repeat(4, 1fr); /* 4 columns */
+    }
+}
+
+@media (max-width: 600px) {
+    .movie-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    }
+}
 
 .navbar {
     background-color: var(--navbar-background);

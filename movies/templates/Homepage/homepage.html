@@ -61,6 +61,30 @@
     <div class="container mt-4">
         <h1 class="text-center my-4">Now Playing Movies</h1>
 
+        <!-- 🎥 Featured Movies Carousel -->
+        {% if featured_movies %}
+        <div id="featuredMoviesCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for movie in featured_movies %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <img src="https://image.tmdb.org/t/p/w1280{{ movie.backdrop_url }}" class="d-block w-100" alt="{{ movie.title }}">
+                        <div class="carousel-caption">
+                            <h5>{{ movie.title }}</h5>
+                            <p>{{ movie.overview }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#featuredMoviesCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#featuredMoviesCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            </button>
+        </div>
+        {% endif %}
+
+        <!-- 🔍 Search and Filter Bar -->
         <form method="GET" action="{% url 'homepage' %}" class="d-flex justify-content-center mb-4">
             <input class="form-control me-2 w-50" type="search" name="q" placeholder="Search movies..." aria-label="Search" value="{{ request.GET.q }}">
             <select class="form-select me-2 w-25" name="sort">
@@ -73,25 +97,50 @@
             <button class="btn btn-outline-light" type="submit">Apply</button>
         </form>
 
+        <!-- 🔥 Trending Movies Section -->
+        {% if trending_movies %}
+        <h2 class="text-light">🔥 Trending Movies</h2>
+        <div class="row">
+            {% for movie in trending_movies %}
+                <div class="col-6 col-md-4 col-lg-2">
+                    <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none text-light">
+                        <div class="movie-card">
+                            <div class="movie-poster">
+                                <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_url }}" alt="{{ movie.title }}">
+                            </div>
+                            <div class="movie-info">
+                                <h6>{{ movie.title }}</h6>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- ❌ No Movies Found Message -->
         {% if search_query and not movies %}
             <p class="text-center text-warning">No movies found for "{{ search_query }}"</p>
         {% endif %}
 
-        <div class="movie-grid ">
+        <!-- 🎬 Main Movie List -->
+        <h2 class="text-light mt-4">🎥 All Movies</h2>
+        <div class="row justify-content-center">
             {% for movie in movies %}
-            <div class="">
+            <div class="col-6 col-md-4 col-lg-2">
                 <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none text-light">
                     <div class="movie-card">
                         <div class="movie-poster">
                             <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_url|default:'/static/default.jpg' }}" alt="{{ movie.title }}">
                         </div>
-                        <h6 class="mt-2 #test text-center">{{ movie.title }}</h6>
+                        <div class="movie-info">
+                            <h6>{{ movie.title }}</h6>
+                        </div>
                     </div>
                 </a>
             </div>
             {% endfor %}
         </div>
-        
     </div>
 
     <div class="footer bg-dark text-light py-3 mt-4">

@@ -60,7 +60,7 @@ ROOT_URLCONF = 'GTMovies.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Ensures the templates directory is considered
+        'DIRS': [os.path.join(BASE_DIR, 'movies/templates')],  # Ensures the templates directory is considered
         'APP_DIRS': True,  # This tells Django to look for templates in each app's "templates" folder
         'OPTIONS': {
             'context_processors': [

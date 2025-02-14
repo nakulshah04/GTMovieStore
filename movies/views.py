@@ -21,11 +21,19 @@ def homepage(request):
     search_query = request.GET.get('q', '').strip()
     sort_option = request.GET.get('sort', '')
 
-    movies = Movie.objects.all().order_by('?')  
+    # Get all movies first
+    movies = Movie.objects.all()
 
+    # Featured Categories
+    trending_movies = movies.order_by('-popularity')[:10]
+    top_rated = movies.order_by('-vote_average')[:10]
+    new_releases = movies.order_by('-release_date')[:10]
+
+    # Apply search filter
     if search_query:
         movies = movies.filter(title__icontains=search_query)
 
+    # Apply sorting filter
     if sort_option == "title_asc":
         movies = movies.order_by('title')
     elif sort_option == "title_desc":
@@ -34,11 +42,19 @@ def homepage(request):
         movies = movies.order_by('release_date')
     elif sort_option == "date_desc":
         movies = movies.order_by('-release_date')
+    else:
+        movies = movies.order_by('?')  # Shuffle if no sorting is applied
 
-    return render(request, 'Homepage/homepage.html', {
-        "movies": movies,
-        "search_query": search_query,
-    })
+    # Pass everything into the context
+    context = {
+        'trending_movies': trending_movies,
+        'top_rated': top_rated,
+        'new_releases': new_releases,
+        'movies': movies,  # Keep full movie list for display
+        'search_query': search_query,
+    }
+
+    return render(request, 'Homepage/homepage.html', context)
 
 
 def movie_detail(request, movie_id):
