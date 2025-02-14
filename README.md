@@ -8,5 +8,5 @@
 * Users can add multiple movies to their shopping cart alongside viewing their previous orders
 
 ### Technologies Used
-* Backend: Django (Python), REST API, Google Firebase
+* Backend: Django (Python), REST API, Google Firebase, sqlite3
 * Fronted: JavaScript, Bootstrap (HTML/CSS)

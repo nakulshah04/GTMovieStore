@@ -1,0 +1,45 @@
+
+
+
+
+/* 🖥️ Responsive Adjustments */
+@media (max-width: 1400px) {
+    .movie-grid {
+        /* background-color: yellow; */
+        grid-template-columns: repeat(6, 1fr); /* 6 columns */
+    }
+}
+
+@media (max-width: 1000px) {
+    .movie-grid {
+        /* background-co /lor: aqua; */
+        grid-template-columns: repeat(4, 1fr); /* 4 columns */
+    }
+}
+
+@media (max-width: 800px) {
+    .movie-grid {
+        /* background-color: aqua; */
+        grid-template-columns: repeat(3, 1fr); /* 4 columns */
+    }
+}
+
+@media (max-width: 600px) {
+    .movie-grid {
+        grid-template-columns: repeat(2,1fr);
+        /* background-color: pink; */
+        width: 100%;
+        place-items: center; 
+    }
+
+}
+
+
+@media (max-width: 310px) {
+    .movie-grid {
+        grid-template-columns: repeat(1,1fr); /* 2 columns */
+        /* background-color: pink; */
+        width: 100%;
+    }
+
+}
