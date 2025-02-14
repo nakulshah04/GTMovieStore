@@ -25,6 +25,7 @@
                     <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'cart' %}">Cart</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'orders' %}">Orders</a></li>
                     {% if user.is_authenticated %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
                     {% else %}
@@ -35,7 +36,24 @@
             </div>
         </div>
     </nav>
+    {% if messages %}
+        <div id="message-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
 
+        <script>
+            setTimeout(function() {
+                var messageContainer = document.getElementById("message-container");
+                if (messageContainer) {
+                    messageContainer.style.display = "none";
+                }
+            }, 3000);
+        </script>
+    {% endif %}
     <div class="container cart-container">
         <h1>Your Cart</h1>
 
@@ -45,6 +63,7 @@
                 <img src="{{ item.movie.poster }}" alt="{{ item.movie.title }}">
                 <h5>{{ item.movie.title }}</h5>
                 <p>Quantity: {{ item.quantity }}</p>
+                <p class="text-align"><strong>Price:</strong> ${{ item.movie.price }}</p>
                 <form action="{% url 'remove_from_cart' item.movie.id %}" method="POST">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger">Remove</button>

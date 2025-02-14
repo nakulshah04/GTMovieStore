@@ -1,4 +1,4 @@
-from .models import Movie  
+from .models import Movie, OrderItem  
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import Http404
@@ -12,6 +12,7 @@ from django.http import JsonResponse
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from .models import Movie, Review
+from .models import Order
 
 
 
@@ -169,6 +170,7 @@ def add_to_cart(request, movie_id):
         cart[movie_id_str] = {
             "title": movie.title,
             "poster": movie.poster_url if movie.poster_url else "/static/default.jpg",
+            "price": float(movie.price),  # Ensure price is stored
             "quantity": 1
         }
 
@@ -205,11 +207,46 @@ def remove_from_cart(request, movie_id):
     messages.success(request, "Movie removed from cart!")
     return redirect("cart")
 
+# def checkout(request):
+#     """ Checkout Process """
+#     request.session['cart'] = {}  
+#     messages.success(request, "Purchase successful! 🎉")
+#     return redirect("homepage")
+
 def checkout(request):
-    """ Checkout Process """
-    request.session['cart'] = {}  
-    messages.success(request, "Purchase successful! 🎉")
-    return redirect("homepage")
+    if request.user.is_authenticated:
+        cart = request.session.get('cart', {})
+        if not cart:
+            messages.error(request, "Your cart is empty.")
+            return redirect("homepage")
+
+        total_price = sum(item['price'] * item['quantity'] for item in cart.values())
+        order = Order.objects.create(user=request.user, total_price=total_price)
+
+        for movie_id, item in cart.items():
+            try:
+                movie = Movie.objects.get(id=movie_id)
+                OrderItem.objects.create(
+                    order=order,
+                    movie=movie,
+                    quantity=item['quantity']
+                )
+            except Movie.DoesNotExist:
+                continue
+
+        request.session['cart'] = {}
+        messages.success(request, "Purchase successful! 🎉 Your order has been placed.")
+        return redirect("orders")
+    else:
+        messages.error(request, "You need to log in to place an order.")
+        return redirect("login")
+    
+
+@login_required
+def order_history(request):
+    """Display user's past orders."""
+    orders = Order.objects.filter(user=request.user).prefetch_related("order_items__movie")
+    return render(request, "movies/orders.html", {"orders": orders})
 
 def about(request):
     """

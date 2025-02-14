@@ -22,6 +22,7 @@
                     <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'cart' %}">Cart</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'orders' %}">Orders</a></li>
                     {% if user.is_authenticated %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
                     {% else %}
@@ -38,7 +39,24 @@
             </div>
         </div>
     </nav>
+    {% if messages %}
+        <div id="message-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
 
+        <script>
+            setTimeout(function() {
+                var messageContainer = document.getElementById("message-container");
+                if (messageContainer) {
+                    messageContainer.style.display = "none";
+                }
+            }, 3000);
+        </script>
+    {% endif %}
     <div class="container mt-4">
         <h1 class="text-center my-4">Now Playing Movies</h1>
 

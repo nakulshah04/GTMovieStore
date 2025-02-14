@@ -2,6 +2,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 from . import views
+from django.urls import path
+from .views import checkout, order_history
 
 from django.contrib.auth import views as auth_views
 
@@ -33,6 +35,9 @@ urlpatterns = [
 
     path("edit-review/<int:review_id>/", edit_review, name="edit_review"),
     path("delete-review/<int:review_id>/", delete_review, name="delete_review"),
+
+    path('checkout/', checkout, name='checkout'),
+    path('orders/', order_history, name='orders'),
 
 
 ]
