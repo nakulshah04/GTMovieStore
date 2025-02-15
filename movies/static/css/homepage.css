@@ -119,7 +119,7 @@ body {
 /* Responsive Fixes */
 @media (max-width: 1400px) {
     .movie-grid {
-        grid-template-columns: repeat(8, 1fr); /* 6 columns */
+        grid-template-columns: repeat(8, 1fr); /* 8 columns */
     }
 }
 
