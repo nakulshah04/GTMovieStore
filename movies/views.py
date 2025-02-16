@@ -25,21 +25,26 @@ def homepage(request):
     # Get all movies first
     movies = Movie.objects.all()
 
-    # Featured Categories
-    trending_movies = Movie.objects.order_by('-popularity')[:12]
-    top_rated_movies = Movie.objects.order_by('-vote_average')[:12]
-    now_playing_movies = Movie.objects.filter(
-        release_date__isnull=False, 
-        release_date__lte=timezone.now()
-    ).order_by('-release_date')[:12]  # Get the 12 most recent movies
-    upcoming_movies = Movie.objects.filter(release_date__gt=timezone.now()).order_by('release_date')[:12]
-    new_releases = Movie.objects.order_by('-release_date')[:12]
+    trending_movies = None
+    top_rated_movies = None
+    now_playing_movies = None
+    upcoming_movies = None
+    new_releases = None
 
-    # Apply search filter
+    if not sort_option:
+        trending_movies = Movie.objects.order_by('-popularity')[:12]
+        top_rated_movies = Movie.objects.order_by('-vote_average')[:12]
+        now_playing_movies = Movie.objects.filter(
+            release_date__isnull=False, 
+            release_date__lte=timezone.now()
+        ).order_by('-release_date')[:12]
+        upcoming_movies = Movie.objects.filter(release_date__gt=timezone.now()).order_by('release_date')[:12]
+        new_releases = Movie.objects.order_by('-release_date')[:12]
+
+
     if search_query:
         movies = movies.filter(title__icontains=search_query)
 
-    # Apply sorting filter
     if sort_option == "title_asc":
         movies = movies.order_by('title')
     elif sort_option == "title_desc":
