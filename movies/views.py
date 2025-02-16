@@ -49,9 +49,8 @@ def homepage(request):
     elif sort_option == "date_desc":
         movies = movies.order_by('-release_date')
     else:
-        movies = movies.order_by('?')  # Shuffle if no sorting is applied
+        movies = movies.order_by('?')
 
-    # Pass everything into the context
     context = {
         'trending_movies': trending_movies,
         'top_rated_movies': top_rated_movies,
@@ -59,6 +58,7 @@ def homepage(request):
         'upcoming_movies': upcoming_movies,
         'new_releases': new_releases,
         'movies': movies,
+        'search_query': search_query,
     }
 
     return render(request, 'Homepage/homepage.html', context)
