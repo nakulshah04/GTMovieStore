@@ -18,7 +18,10 @@
 
 html, body {
     height: 100%;
+    display: flex;
+    flex-direction: column;
 }
+
 
 body {
     background-color: var(--background-color);
@@ -139,10 +142,15 @@ body {
     background-color: var(--navbar-background);
 }
 
+.container {
+    flex-grow: 1;
+}
+
+
 .footer {
     text-align: center;
     padding: 15px;
     background-color: var(--footer-background);
     color: var(--text-color);
-    margin-top: auto;
+    width: 100%;
 }
