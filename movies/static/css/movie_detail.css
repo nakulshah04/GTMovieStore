@@ -66,6 +66,8 @@ body {
     border-radius: 5px;
 }
 
+
+
 .user-review-card-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr); 
@@ -126,6 +128,7 @@ textarea.form-control::placeholder {
 @media (max-width: 768px) {
     .user-review-card-grid {
         grid-template-columns: 1fr; 
+
     }
     
     .add-review-card {

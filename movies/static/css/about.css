@@ -1,11 +1,11 @@
 body {
-    background-color: #f8f9fa;
-    color: #333;
+    background-color: black !important;
+    color: white;
 }
 
 .hero-section {
     padding: 60px 20px;
-    background-color: lightgrey;
+    background-color: rgb(29, 29, 29);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -18,7 +18,7 @@ body {
 .team-section {
     margin-top: 50px;
     padding: 50px 20px;
-    background-color: lightslategray;
+    background-color: black;
 }
 
 .team-img {

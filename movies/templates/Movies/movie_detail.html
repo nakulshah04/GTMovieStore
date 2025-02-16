@@ -12,6 +12,17 @@
 
 </head>
 
+<style>
+    @media (max-width: 1000px) {
+        .movie-container{
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+            width: 100%;
+        }
+    }
+</style>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
@@ -21,7 +32,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'cart' %}">Cart</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'orders' %}">Orders</a></li>
@@ -36,22 +46,22 @@
         </div>
     </nav>
     {% if messages %}
-        <div id="message-container">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
+    <div id="message-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
         </div>
+        {% endfor %}
+    </div>
 
-        <script>
-            setTimeout(function() {
-                var messageContainer = document.getElementById("message-container");
-                if (messageContainer) {
-                    messageContainer.style.display = "none";
-                }
-            }, 3000);
-        </script>
+    <script>
+        setTimeout(function () {
+            var messageContainer = document.getElementById("message-container");
+            if (messageContainer) {
+                messageContainer.style.display = "none";
+            }
+        }, 3000);
+    </script>
     {% endif %}
     <div class="movie-detail-holder">
         <div class="container movie-container">
@@ -118,35 +128,35 @@
     </div>
     {% endif %}
 
-<div class="container mt-4">
-    <h3>Reviews</h3>
-    <div class="user-review-card-grid">
-        {% for review in reviews %}
-        <div class="review-card">
-            <div class="review-card-body">
-                <h5 class="card-title">{{ review.user.username }}</h5>
-                <p class="card-text"><strong>Rating:</strong> {{ review.rating }}/10</p>
-                <p class="card-text">{{ review.comment }}</p>
-                <p class="card-text">Reviewed on: {{ review.created_at }}</p>
+    <div class="container mt-4">
+        <h3>Reviews</h3>
+        <div class="user-review-card-grid">
+            {% for review in reviews %}
+            <div class="review-card">
+                <div class="review-card-body">
+                    <h5 class="card-title">{{ review.user.username }}</h5>
+                    <p class="card-text"><strong>Rating:</strong> {{ review.rating }}/10</p>
+                    <p class="card-text">{{ review.comment }}</p>
+                    <p class="card-text">Reviewed on: {{ review.created_at }}</p>
 
-                {% if request.user == review.user %}
-                <div class="review-actions mt-2">
-                    <a href="{% url 'edit_review' review.id %}" class="btn btn-warning btn-sm">
-                        <i class="fas fa-edit"></i> Edit
-                    </a>
-                    <a href="{% url 'delete_review' review.id %}" class="btn btn-danger btn-sm"
-                        onclick="return confirm('Are you sure you want to delete this review?');">
-                        <i class="fas fa-trash"></i> Delete
-                    </a>
+                    {% if request.user == review.user %}
+                    <div class="review-actions mt-2">
+                        <a href="{% url 'edit_review' review.id %}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a href="{% url 'delete_review' review.id %}" class="btn btn-danger btn-sm"
+                            onclick="return confirm('Are you sure you want to delete this review?');">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
-                {% endif %}
             </div>
+            {% empty %}
+            <p>No reviews yet. Be the first to review this movie!</p>
+            {% endfor %}
         </div>
-        {% empty %}
-        <p>No reviews yet. Be the first to review this movie!</p>
-        {% endfor %}
     </div>
-</div>
 
 
 </body>
