@@ -167,13 +167,14 @@ def cart(request):
 
     for movie_id, movie_data in cart.items():
         if isinstance(movie_data, int):  
-            movie_data = {"title": f"Movie {movie_id}", "poster": "", "quantity": movie_data}
+            movie_data = {"title": f"Movie {movie_id}", "poster": "", "quantity": movie_data, "price": movie_data.get("price", 0.00)}
 
         cart_items.append({
             "movie": {
                 "id": movie_id,
                 "title": movie_data.get("title", f"Movie {movie_id}"),
                 "poster": movie_data.get("poster", ""),
+                "price": movie_data.get("price", 0.00),
             },
             "quantity": movie_data.get("quantity", 1)
         })
