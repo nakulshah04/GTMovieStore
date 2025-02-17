@@ -273,7 +273,7 @@ def checkout(request):
 def order_history(request):
     """Display user's past orders."""
     orders = Order.objects.filter(user=request.user).prefetch_related("order_items__movie")
-    return render(request, "movies/orders.html", {"orders": orders})
+    return render(request, "Movies/orders.html", {"orders": orders})
 
 def about(request):
     """
