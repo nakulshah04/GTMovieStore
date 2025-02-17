@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,21 @@
     <link rel="stylesheet" href="{% static 'css/homepageadd.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
+
+<style>
+    .special-row {
+        /* background-color: pink; */
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .special-row-holder{
+        /* background-color: blue; */
+        width: 90%;
+    }
+</style>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -24,181 +40,81 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'cart' %}">Cart</a></li>
                     {% if user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'orders' %}">Orders</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'orders' %}">Orders</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Register</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Register</a></li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
     {% if messages %}
-        <div id="message-container">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
+    <div id="message-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
         </div>
+        {% endfor %}
+    </div>
 
-        <script>
-            setTimeout(function() {
-                var messageContainer = document.getElementById("message-container");
-                if (messageContainer) {
-                    messageContainer.style.display = "none";
-                }
-            }, 3000);
-        </script>
+    <script>
+        setTimeout(function () {
+            var messageContainer = document.getElementById("message-container");
+            if (messageContainer) {
+                messageContainer.style.display = "none";
+            }
+        }, 3000);
+    </script>
     {% endif %}
     <div class="container mt-4">
         <h1 class="text-center my-4">Now Playing Movies</h1>
-    
+
         <!-- 🔍 Search and Filter Bar -->
         <form method="GET" action="{% url 'homepage' %}" class="d-flex justify-content-center mb-4">
-            <input class="form-control me-2 w-50" type="search" name="q" placeholder="Search movies..." aria-label="Search" value="{{ search_query }}">
+            <input class="form-control me-2 w-50" type="search" name="q" placeholder="Search movies..."
+                aria-label="Search" value="{{ search_query }}">
             <select class="form-select me-2 w-25" name="sort">
                 <option value="">Sort by</option>
                 <option value="title_asc" {% if request.GET.sort == "title_asc" %}selected{% endif %}>Title (A-Z)</option>
                 <option value="title_desc" {% if request.GET.sort == "title_desc" %}selected{% endif %}>Title (Z-A)</option>
                 <option value="date_desc" {% if request.GET.sort == "date_desc" %}selected{% endif %}>Release Date (Newest First)</option>
                 <option value="date_asc" {% if request.GET.sort == "date_asc" %}selected{% endif %}>Release Date (Oldest First)</option>
+
             </select>
             <button class="btn btn-outline-light" type="submit">Apply</button>
         </form>
-    
-        {% if search_query %}
-            <h2 class="text-light">Search Results for "{{ search_query }}"</h2>
-            <div class="row justify-content-center">
-                {% for movie in movies %}
-                    <div class="col-6 col-md-4 col-lg-3 col-xl-2">
-                        <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none text-light">
-                            <div class="movie-card">
-                                <div class="movie-poster">
-                                    <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_url }}" alt="{{ movie.title }}">
-                                </div>
-                                <div class="movie-info">
-                                    <h6>{{ movie.title }}</h6>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-    
-            {% if trending_movies %}
-                <h2 class="text-light">Trending Movies</h2>
-                <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 row-cols-xl-8 g-3 justify-content-center">
-                    {% for movie in trending_movies %}
-                        <div class="col d-flex justify-content-center">
-                            <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none text-light">
-                                <div class="movie-card">
-                                    <div class="movie-poster">
-                                        <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_url }}" alt="{{ movie.title }}">
-                                    </div>
-                                    <div class="movie-info">
-                                        <h6>{{ movie.title }}</h6>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-    
-            {% if top_rated_movies %}
-                <h2 class="text-light">Top Rated Movies</h2>
-                <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 row-cols-xl-8 g-3 justify-content-center">
-                    {% for movie in top_rated_movies %}
-                        <div class="col d-flex justify-content-center">
-                            <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none text-light">
-                                <div class="movie-card">
-                                    <div class="movie-poster">
-                                        <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_url }}" alt="{{ movie.title }}">
-                                    </div>
-                                    <div class="movie-info">
-                                        <h6>{{ movie.title }}</h6>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-    
-            {% if now_playing_movies %}
-                <h2 class="text-light">Now Playing</h2>
-                <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 row-cols-xl-8 g-3 justify-content-center">
-                    {% for movie in now_playing_movies %}
-                        <div class="col d-flex justify-content-center">
-                            <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none text-light">
-                                <div class="movie-card">
-                                    <div class="movie-poster">
-                                        <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_url }}" alt="{{ movie.title }}">
-                                    </div>
-                                    <div class="movie-info">
-                                        <h6>{{ movie.title }}</h6>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-    
-            {% if upcoming_movies %}
-                <h2 class="text-light">Upcoming Movies</h2>
-                <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 row-cols-xl-8 g-3 justify-content-center">
-                    {% for movie in upcoming_movies %}
-                        <div class="col d-flex justify-content-center">
-                            <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none text-light">
-                                <div class="movie-card">
-                                    <div class="movie-poster">
-                                        <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_url }}" alt="{{ movie.title }}">
-                                    </div>
-                                    <div class="movie-info">
-                                        <h6>{{ movie.title }}</h6>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-    
-            {% if new_releases %}
-                <h2 class="text-light">New Releases</h2>
-                <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 row-cols-xl-8 g-3 justify-content-center">
-                    {% for movie in new_releases %}
-                        <div class="col d-flex justify-content-center">
-                            <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none text-light">
-                                <div class="movie-card">
-                                    <div class="movie-poster">
-                                        <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_url }}" alt="{{ movie.title }}">
-                                    </div>
-                                    <div class="movie-info">
-                                        <h6>{{ movie.title }}</h6>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endif %}
-    </div>
 
-        {% if not search_query %}
-        <h2 class="text-light ">All Movies</h2>
-        <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 row-cols-xl-8 g-3 justify-content-center ">
+        {% if search_query %}
+        <h2 class="text-light">Search Results for "{{ search_query }}"</h2>
+        <div class="row justify-content-center">
             {% for movie in movies %}
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+                <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none text-light">
+                    <div class="movie-card">
+                        <div class="movie-poster">
+                            <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_url }}" alt="{{ movie.title }}">
+                        </div>
+                        <div class="movie-info">
+                            <h6>{{ movie.title }}</h6>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+
+        {% if trending_movies %}
+        <h2 class="text-light">Trending Movies</h2>
+        <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 row-cols-xl-8 g-3 justify-content-center">
+            {% for movie in trending_movies %}
             <div class="col d-flex justify-content-center">
                 <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none text-light">
                     <div class="movie-card">
                         <div class="movie-poster">
-                            <img src="{% if movie.poster_url %}https://image.tmdb.org/t/p/w500{{ movie.poster_url }}{% else %}{% static 'default.jpg' %}{% endif %}" alt="{{ movie.title }}">
+                            <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_url }}" alt="{{ movie.title }}">
                         </div>
                         <div class="movie-info">
                             <h6>{{ movie.title }}</h6>
@@ -209,20 +125,131 @@
             {% endfor %}
         </div>
         {% endif %}
-    </div>    
+
+        {% if top_rated_movies %}
+        <h2 class="text-light">Top Rated Movies</h2>
+        <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 row-cols-xl-8 g-3 justify-content-center">
+            {% for movie in top_rated_movies %}
+            <div class="col d-flex justify-content-center">
+                <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none text-light">
+                    <div class="movie-card">
+                        <div class="movie-poster">
+                            <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_url }}" alt="{{ movie.title }}">
+                        </div>
+                        <div class="movie-info">
+                            <h6>{{ movie.title }}</h6>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if now_playing_movies %}
+        <h2 class="text-light">Now Playing</h2>
+        <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 row-cols-xl-8 g-3 justify-content-center">
+            {% for movie in now_playing_movies %}
+            <div class="col d-flex justify-content-center">
+                <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none text-light">
+                    <div class="movie-card">
+                        <div class="movie-poster">
+                            <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_url }}" alt="{{ movie.title }}">
+                        </div>
+                        <div class="movie-info">
+                            <h6>{{ movie.title }}</h6>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if upcoming_movies %}
+        <h2 class="text-light">Upcoming Movies</h2>
+        <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 row-cols-xl-8 g-3 justify-content-center">
+            {% for movie in upcoming_movies %}
+            <div class="col d-flex justify-content-center">
+                <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none text-light">
+                    <div class="movie-card">
+                        <div class="movie-poster">
+                            <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_url }}" alt="{{ movie.title }}">
+                        </div>
+                        <div class="movie-info">
+                            <h6>{{ movie.title }}</h6>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if new_releases %}
+        <h2 class="text-light">New Releases</h2>
+        <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 row-cols-xl-8 g-3 justify-content-center">
+            {% for movie in new_releases %}
+            <div class="col d-flex justify-content-center">
+                <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none text-light">
+                    <div class="movie-card">
+                        <div class="movie-poster">
+                            <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_url }}" alt="{{ movie.title }}">
+                        </div>
+                        <div class="movie-info">
+                            <h6>{{ movie.title }}</h6>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endif %}
+    </div>
+
+    {% if not search_query %}
+    <div class="special-row">
+        <div class="special-row-holder">
+            <h2 class="text-light ">All Movies</h2>
+            <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 row-cols-xl-8 g-3 justify-content-center ">
+                {% for movie in movies %}
+                <div class="col d-flex justify-content-center">
+                    <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none text-light">
+                        <div class="movie-card">
+                            <div class="movie-poster">
+                                <img src="{% if movie.poster_url %}https://image.tmdb.org/t/p/w500{{ movie.poster_url }}{% else %}{% static 'default.jpg' %}{% endif %}"
+                                    alt="{{ movie.title }}">
+                            </div>
+                            <div class="movie-info">
+                                <h6>{{ movie.title }}</h6>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+
+    {% endif %}
+    </div>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
- <script src="{% static 'js/theme_toggle.js' %}"></script>
+    <script src="{% static 'js/theme_toggle.js' %}"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             const themeToggle = document.getElementById("checkbox");
             if (themeToggle) {
-                themeToggle.addEventListener("change", function() {
+                themeToggle.addEventListener("change", function () {
                     document.body.setAttribute("data-theme", this.checked ? "dark" : "light");
                 });
             }
         });
-      </script>
+    </script>
 </body>
+
 </html>
