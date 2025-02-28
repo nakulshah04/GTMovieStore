@@ -138,7 +138,6 @@ LOGIN_REDIRECT_URL = 'homepage'
 LOGOUT_REDIRECT_URL = 'homepage'
 
 EMAIL_HOST_USER = "gtmovies2340@gmail.com"
-EMAIL_HOST_PASSWORD = "gtmoviestrial"
 
 # Forget password
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
