@@ -1,11 +1,31 @@
-### Georgia Tech CS 2340 GT Movies Store Project
+# GTMovieStore🎬
 
-### Project Objective
-* Users can search and filter movies
-* Users can view movie descriptions, including name, banner, and popularity
-* Users can view movie reviews from other users and add/edit/delete their reviews
-* Users can add multiple movies to their shopping cart alongside viewing their previous orders
+**GTMovieStore** is a web application that allows users to browse, review, and purchase movies with a seamless shopping cart experience.
 
-### Technologies Used
-* Backend: Python Django, REST API, Google Firebase, sqlite3
-* Fronted: JavaScript, Bootstrap (for JS, HTML, and CSS)
+---
+
+## 🎯 Project Objective
+
+- **Movie Search & Filter**: Users can search for movies and filter results based on various criteria.
+- **Movie Details**: View detailed movie information, including title, banner, popularity, and more.
+- **User Reviews**: Read reviews from other users and add, edit, or delete your own reviews.
+- **Shopping Cart**: Add multiple movies to your cart and track previous orders for easy access.
+
+## 🛠️ Technologies Used
+
+- **Backend**:
+  - Python Django
+  - REST API
+  - Google Firebase
+  - SQLite3
+
+- **Frontend**:
+  - JavaScript
+  - Bootstrap (JS, HTML, and CSS)
+
+## 🚀 Features
+
+- **User Authentication**: Secure login and registration
+- **Movie Listings**: Dynamic display of movies with banners and descriptions
+- **Review System**: Interactive review management for each movie
+- **Order Management**: Shopping cart functionality and order history
